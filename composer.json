@@ -1,6 +1,6 @@
 {
   "name": "elegance/http",
-  "description": "Ferramentas para a criação de API Elegance",
+  "description": "Ferramentas para criação de soluções HTTP com PHP Elegance",
   "license": "MIT",
   "authors": [
     {
