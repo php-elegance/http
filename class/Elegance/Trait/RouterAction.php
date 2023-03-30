@@ -3,8 +3,9 @@
 namespace Elegance\Trait;
 
 use Closure;
-use Elegance\Import;
+use Elegance\File;
 use Elegance\Request;
+use Elegance\View;
 use Exception;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -32,11 +33,29 @@ trait RouterAction
 
     protected static function action_import($file)
     {
-        $action = Import::return($file);
+        $file = path($file);
+        File::ensure_extension($file, 'php');
 
-        $action = self::getAction($action);
+        if (File::check($file)) {
+            $response = (function ($__FILEPATH__) {
+                ob_start();
+                $__RETURN__ = require $__FILEPATH__;
+                $__OUTPUT__ = ob_get_clean();
 
-        return $action();
+                if (empty($__OUTPUT__))
+                    return $__RETURN__;
+
+                return View::renderString($__OUTPUT__, 'html');
+            })($file);
+        }
+
+        if (is_closure($response))
+            return self::action_closure($response);
+
+        if (is_object($response))
+            return self::action_object($response);
+
+        return $response;
     }
 
     protected static function action_closure(closure $function)

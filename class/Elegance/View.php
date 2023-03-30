@@ -29,32 +29,45 @@ abstract class View
                 list($ref, $path, $name, $file, $type) = $info;
 
                 if (self::currentOpen($ref, $path, $name, $type, $data)) {
-
                     $content = Import::output($file, self::current('data'));
-
-                    if (self::current('type') == 'vue')
-                        $content = self::renderVue($content, ...$params);
-                    else
-                        $content = self::applyPrepare($content);
-
-                    if (self::current('in'))
-                        $content = self::render(self::current('in'), ['content' => $content]);
-
-                    if (self::current('type') == 'css' || self::current('type') == 'scss') {
-                        if (count(self::$current) == 1 || !self::currentIn(['css', 'scss', 'vue'])) {
-                            $scssCompiler = new Compiler();
-                            $scssCompiler->setOutputStyle(OutputStyle::COMPRESSED);
-                            $content = $scssCompiler->compileString($content)->getCss();
-                        }
-                    }
-
+                    $content = self::renderize($content, $params);
                     self::currentClose();
                 }
-
-                return $content;
             }
         }
-        return '';
+
+        return $content ?? '';
+    }
+
+    /** Renderiza uma string como uma view html */
+    static function renderString(string $string): string
+    {
+        self::currentOpen(null, null, null, 'html', []);
+        $content = self::renderize($string);
+        self::currentClose();
+        return $content;
+    }
+
+    /** Retorna a string da view atual renderizada */
+    protected static function renderize(string $content, array $params = []): string
+    {
+        if (self::current('type') == 'vue')
+            $content = self::renderVue($content, ...$params);
+        else
+            $content = self::applyPrepare($content);
+
+        if (self::current('in'))
+            $content = self::render(self::current('in'), ['content' => $content]);
+
+        if (self::current('type') == 'css' || self::current('type') == 'scss') {
+            if (count(self::$current) == 1 || !self::currentIn(['css', 'scss', 'vue'])) {
+                $scssCompiler = new Compiler();
+                $scssCompiler->setOutputStyle(OutputStyle::COMPRESSED);
+                $content = $scssCompiler->compileString($content)->getCss();
+            }
+        }
+
+        return $content;
     }
 
     /** Retorna o arquivo representado por uma referencia de view */
