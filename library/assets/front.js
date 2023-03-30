@@ -56,7 +56,8 @@ const front = {
 
   action: {
     async redirect(href) {
-      window.location.href = href;
+      window.location.replace(href);
+      // window.location.href = href;
     },
     async link(href) {
       if (href == window.location) return;
