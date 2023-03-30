@@ -1,0 +1,7 @@
+/vendor
+/.env
+/mx
+
+/index.php
+/class/Controller
+/app
