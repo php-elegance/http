@@ -1,33 +1,36 @@
 {
-  "name": "elegance/http",
-  "description": "Ferramentas para criação de soluções HTTP com PHP Elegance",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "André Ricardo",
-      "email": "contatoadmx@gamil.com"
-    }
-  ],
-  "minimum-stability": "dev",
-  "autoload": {
-    "psr-4": {
-      "": "class/"
+    "name": "elegance/http",
+    "description": "Ferramentas para criação de soluções HTTP com PHP Elegance",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "André Ricardo",
+            "email": "contatoadmx@gamil.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "": "class/"
+        },
+        "files": [
+            "helper/constant/mimetype.php",
+            "helper/constant/request_is_type.php",
+            "helper/constant/response_http_code.php",
+            "helper/function/is_httpStatus.php",
+            "helper/function/redirect.php",
+            "helper/function/url.php",
+            "helper/function/view.php",
+            "helper/script/env.php",
+            "helper/script/router.php",
+            "helper/script/start.php",
+            "helper/script/view.php"
+        ]
     },
-    "files": [
-      "helper/constant/mimetype.php",
-      "helper/constant/request_is_type.php",
-      "helper/constant/response_http_code.php",
-      "helper/function/is_httpStatus.php",
-      "helper/function/redirect.php",
-      "helper/function/url.php",
-      "helper/script/env.php",
-      "helper/script/router.php",
-      "helper/script/start.php"
-    ]
-  },
-  "require": {
-    "elegance/core": "dev-main",
-    "elegance/mxcmd": "dev-main",
-    "elegance/cif-code": "dev-main"
-  }
+    "require": {
+        "elegance/core": "dev-main",
+        "elegance/mxcmd": "dev-main",
+        "elegance/cif-code": "dev-main",
+        "scssphp/scssphp": "dev-master"
+    }
 }
