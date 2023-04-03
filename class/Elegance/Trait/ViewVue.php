@@ -34,7 +34,7 @@ trait ViewVue
         }
 
         if ($vue['isApp']) {
-            self::$vueIncorp[] = prepare("energize.load.vue([#ref],'[#name]')", $vue);
+            self::$vueIncorp[] = prepare("front.load.vue([#ref],'[#name]')", $vue);
 
             $script = [
                 implode("\n", self::$vueScript),

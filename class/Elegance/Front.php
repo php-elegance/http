@@ -2,13 +2,13 @@
 
 namespace Elegance;
 
-use Elegance\Trait\EnergizeHead;
-use Elegance\Trait\EnergizeRender;
+use Elegance\Trait\FrontHead;
+use Elegance\Trait\FrontRender;
 
-abstract class Energize
+abstract class Front
 {
-    use EnergizeRender;
-    use EnergizeHead;
+    use FrontRender;
+    use FrontHead;
 
     /** Resolve o um conteúdo como uma página HTML */
     static function solve($content)
@@ -16,7 +16,7 @@ abstract class Energize
         if (!is_stringable($content))
             return $content;
 
-        if (Request::header('Energize-Request-Type') == 'link') {
+        if (Request::header('Front-Request-Type') == 'link') {
             Response::type('json');
             Response::status(STS_OK);
             Response::content([

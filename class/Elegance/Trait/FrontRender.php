@@ -9,7 +9,7 @@ use Elegance\View;
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\OutputStyle;
 
-trait EnergizeRender
+trait FrontRender
 {
     protected static ?string $page = null;
     protected static ?string $layout = null;
@@ -18,7 +18,7 @@ trait EnergizeRender
     {
         $response = [
             'head' => self::getHead(),
-            'render' => 'energize_content',
+            'render' => 'front_content',
             'hash' => null,
             'content' => '',
         ];
@@ -28,14 +28,14 @@ trait EnergizeRender
 
         $content = self::organizeHtml($content);
 
-        if (Request::header('Energize-Page-Hash') != $pageHash) {
+        if (Request::header('Front-Page-Hash') != $pageHash) {
             $response['hash'] = $pageHash;
-            $response['render'] = 'energize_page';
+            $response['render'] = 'front_page';
             $content = self::renderLayout($content);
             $content = self::renderPage($content);
-        } else if (Request::header('Energize-Layout-Hash') != $layoutHash) {
+        } else if (Request::header('Front-Layout-Hash') != $layoutHash) {
             $response['hash'] = $layoutHash;
-            $response['render'] = 'energize_layout';
+            $response['render'] = 'front_layout';
             $content = self::renderLayout($content);
         }
 
@@ -52,7 +52,7 @@ trait EnergizeRender
 
         $content = self::renderLayout($content);
         $content = self::renderPage($content);
-        $content = self::renderEnergize($content);
+        $content = self::renderFront($content);
 
         $content = str_replace_all(["\n\n", "\n ", "  "], ["\n", "\n", ' '], trim($content));
 
@@ -62,7 +62,7 @@ trait EnergizeRender
     /** Retorna o layout do front renderizado */
     protected static function renderLayout($content)
     {
-        $content = "\n<div id='energize_content'>$content</div>\n";
+        $content = "\n<div id='front_content'>$content</div>\n";
 
         $layout = self::getView(self::$layout, 'layout/default.html');
 
@@ -77,7 +77,7 @@ trait EnergizeRender
     protected static function renderPage($content)
     {
         $hash = Code::on(self::$layout ?? '@layout');
-        $content = "\n<div id='energize_layout' data-hash='$hash'>$content</div>\n";
+        $content = "\n<div id='front_layout' data-hash='$hash'>$content</div>\n";
 
         $page = self::getView(self::$page, 'page/default.html');
 
@@ -89,32 +89,32 @@ trait EnergizeRender
     }
 
     /** Retorna base do front rendereizada */
-    protected static function renderEnergize($content)
+    protected static function renderFront($content)
     {
         $hash = Code::on(self::$page ?? '@page');
-        $content = "\n<div id='energize_page' data-hash='$hash'>$content</div>\n";
+        $content = "\n<div id='front_page' data-hash='$hash'>$content</div>\n";
 
         $data = [
             'head' => self::getHead(),
-            'routeError' => url(env('ENERGIZE_ROUTE_ERROR'))
+            'routeError' => url(env('FRONT_ROUTE_ERROR'))
         ];
 
-        $energize = self::getView(env('ENERGIZE_VIEW_BASE'), 'energize/energize.html');
+        $front = self::getView(env('FRONT_VIEW_BASE'), 'front/front.html');
 
-        $energize = View::render($energize, $data);
+        $front = View::render($front, $data);
 
-        preg_match_all('/<script[^>]*>(.*?)<\/script>/s', $energize, $script);
+        preg_match_all('/<script[^>]*>(.*?)<\/script>/s', $front, $script);
         $script = implode("\n", $script[0] ?? []);
-        $energize = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $energize);
+        $front = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $front);
 
-        preg_match_all('/<style[^>]*>(.*?)<\/style>/s', $energize, $style);
+        preg_match_all('/<style[^>]*>(.*?)<\/style>/s', $front, $style);
         $style = implode("\n", $style[1] ?? []);
-        $energize = preg_replace('#<style(.*?)>(.*?)</style>#is', '', $energize);
+        $front = preg_replace('#<style(.*?)>(.*?)</style>#is', '', $front);
 
-        preg_match_all('/<head[^>]*>(.*?)<\/head>/s', $energize, $head);
+        preg_match_all('/<head[^>]*>(.*?)<\/head>/s', $front, $head);
         $head = array_shift($head[0]) ?? '';
-        $energize = str_replace($head, '[#head]', $energize);
-        $energize = preg_replace('#<head(.*?)>(.*?)</head>#is', '', $energize);
+        $front = str_replace($head, '[#head]', $front);
+        $front = preg_replace('#<head(.*?)>(.*?)</head>#is', '', $front);
 
         preg_match_all('/<head[^>]*>(.*?)<\/head>/s', $head, $clsHead);
         $head = array_shift($clsHead[1]) ?? '';
@@ -133,12 +133,12 @@ trait EnergizeRender
         $head = implode("\n", $head);
         $head = "<head>\n$head\n</head>";
 
-        $energize = prepare($energize, [
+        $front = prepare($front, [
             'head' => $head,
             'content' => $content,
         ]);
 
-        return $energize;
+        return $front;
     }
 
     /** Retrona o HTML de um conteúdo organizado em style+content+script */

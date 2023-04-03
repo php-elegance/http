@@ -12,8 +12,8 @@ Router::get('favicon.ico', function () {
     Assets::send($file);
 });
 
-Router::get('energize.js', function () {
-    $file = 'library/assets/energize.js';
+Router::get('front.js', function () {
+    $file = 'library/assets/front.js';
 
     if (!File::check($file)) $file = dirname(__DIR__, 2) . "/$file";
 

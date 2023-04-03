@@ -6,7 +6,7 @@ chdir(__DIR__);
 
 require './vendor/autoload.php';
 
-Router::middleware('energize', function () {
+Router::middleware('front', function () {
     Router::add('', fn () => 'Elegance');
 });
 

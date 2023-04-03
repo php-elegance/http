@@ -2,7 +2,7 @@
 
 namespace Elegance\Trait;
 
-trait EnergizeHead
+trait FrontHead
 {
     protected static array $head = [];
 

@@ -8,9 +8,9 @@
     <link rel="icon" type="image/x-icon" href="[#head.favicon]" />
     <title>[#head.title]</title>
     <script>
-      const energizeRouteaBase = "[#url]";
-      const energizeRouteError = "[#routeError]";
-      const energizeDinamicHead = function (head) {
+      const frontRouteaBase = "[#url]";
+      const frontRouteError = "[#routeError]";
+      const frontDinamicHead = function (head) {
         document.title = head.title;
         document.head
           .querySelector('meta[name="description"]')
@@ -20,7 +20,7 @@
           .setAttribute("href", head.favicon);
       };
     </script>
-    <script src="[#url:energize.js]"></script>
+    <script src="[#url:front.js]"></script>
   </head>
   <body>
     [#content]

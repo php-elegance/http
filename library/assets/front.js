@@ -1,18 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
   window.onpopstate = () => location.reload();
   console.log("🦝");
-  energize.core.run();
+  front.core.run();
 });
 
-const energize = {
+const front = {
   element: {
     page: null,
     layout: null,
     content: null,
     update() {
-      this.page = document.getElementById("energize_page");
-      this.layout = document.getElementById("energize_layout");
-      this.content = document.getElementById("energize_content");
+      this.page = document.getElementById("front_page");
+      this.layout = document.getElementById("front_layout");
+      this.content = document.getElementById("front_content");
     },
   },
 
@@ -44,11 +44,11 @@ const energize = {
       this.actions[query] = action;
     },
     run() {
-      energize.element.update();
+      front.element.update();
       Object.keys(this.actions).forEach((query) =>
         document.body.querySelectorAll(query).forEach((el) => {
           this.actions[query](el);
-          el.removeAttribute("energize");
+          el.removeAttribute("front");
         })
       );
     },
@@ -67,15 +67,15 @@ const energize = {
       if (infoLocation.hostname != infoHref.hostname) this.redirect(href);
       else {
         let headers = {
-          "Energize-Request-Type": "link",
-          "Energize-Base-Hash": energize.element.page.dataset.hash,
-          "Energize-Layout-Hash": energize.element.layout.dataset.hash,
+          "Front-Request-Type": "link",
+          "Front-Base-Hash": front.element.page.dataset.hash,
+          "Front-Layout-Hash": front.element.layout.dataset.hash,
         };
 
         let resp = await this.api("get", href, null, headers);
 
         if (resp.status > 399) {
-          let hrefRedirect = `${energizeRouteError}?status=${resp.status}`;
+          let hrefRedirect = `${frontRouteError}?status=${resp.status}`;
           if (href != hrefRedirect) this.link(hrefRedirect);
           return;
         }
@@ -83,10 +83,10 @@ const energize = {
         if (resp.data.render) {
           let elRender = document.getElementById(resp.data.render);
           elRender.dataset.hash = resp.data.hash;
-          energize.update.content(elRender, resp.data.content);
-          energize.update.location(href);
-          energizeDinamicHead(resp.data.head);
-          energize.core.run();
+          front.update.content(elRender, resp.data.content);
+          front.update.location(href);
+          frontDinamicHead(resp.data.head);
+          front.core.run();
         }
       }
     },
@@ -94,7 +94,7 @@ const energize = {
     async submit(method, url, data) {
       if (!this.submitting) {
         this.submitting = true;
-        let headers = { "Energize-Request-Type": "submit" };
+        let headers = { "Front-Request-Type": "submit" };
         let resp = await this.api(method, url, data, headers);
         this.submitting = false;
         return resp;
@@ -113,7 +113,7 @@ const energize = {
           let resp = xhr.response;
 
           if (xhr.getResponseHeader("New-Location")) {
-            energize.action.link(xhr.getResponseHeader("New-Location"), true);
+            front.action.link(xhr.getResponseHeader("New-Location"), true);
             resp = {
               elegance: true,
               staus: xhr.status,
@@ -158,22 +158,22 @@ const energize = {
   },
 };
 
-energize.core.register("[href][energize]", (el) => {
+front.core.register("[href][front]", (el) => {
   el.addEventListener("click", (ev) => {
     ev.preventDefault();
-    energize.action.link(el.href);
+    front.action.link(el.href);
   });
 });
 
-energize.core.register("form[energize]", (el) => {
+front.core.register("form[front]", (el) => {
   el.addEventListener("submit", async (ev) => {
     ev.preventDefault();
 
-    let showmessage = el.querySelector(".energize-alert");
+    let showmessage = el.querySelector(".front-alert");
 
     if (showmessage) showmessage.innerHTML = "";
 
-    let resp = await energize.action.submit(
+    let resp = await front.action.submit(
       el.getAttribute("method") ?? "post",
       el.action,
       new FormData(el)
