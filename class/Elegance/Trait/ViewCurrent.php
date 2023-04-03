@@ -56,11 +56,13 @@ trait ViewCurrent
 
         $currentData = self::current('data');
 
-        self::current('data', match ($merge) {
+        $data = match ($merge) {
             1 => [...$currentData, ...$data],
             0 => $data,
             -1 => [...$data, ...$currentData],
-        });
+        };
+
+        self::current('data', $data);
     }
 
     /** Verifica se a view atual esta sendo renderiza em um tipo de view */

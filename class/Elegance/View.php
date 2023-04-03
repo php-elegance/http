@@ -31,12 +31,15 @@ abstract class View
                 if (self::currentOpen($ref, $path, $name, $type, $data)) {
 
                     if ($type == 'php') {
-                        list($content, $data) = (function ($__FILEPATH__) {
+                        list($content, $data) = (function ($__FILEPATH__, $__PARAMS__) {
+                            foreach (array_keys($__PARAMS__) as $__KEY__)
+                                if (!is_numeric($__KEY__))
+                                    $$__KEY__ = &$__PARAMS__[$__KEY__];
                             ob_start();
                             require $__FILEPATH__;
                             $__OUTPUT__ = ob_get_clean();
                             return [$__OUTPUT__, $data ?? []];
-                        })($file);
+                        })($file, self::current('data'));
                         self::currentData($data, 1);
                     } else {
                         $content = Import::output($file, self::current('data'));
