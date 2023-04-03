@@ -65,7 +65,6 @@ trait EnergizeRender
         $content = "\n<div id='energize_content'>$content</div>\n";
 
         $layout = self::getView(self::$layout, 'layout/default.html');
-        $layout = $layout ?? '=' . (dirname(__DIR__, 3) . "/view/base/layout/default.html");
 
         $layout = View::render($layout);
         $layout = self::organizeHtml($layout);
@@ -81,7 +80,6 @@ trait EnergizeRender
         $content = "\n<div id='energize_layout' data-hash='$hash'>$content</div>\n";
 
         $page = self::getView(self::$page, 'page/default.html');
-        $page = $page ?? '=' . (dirname(__DIR__, 3) . "/view/base/page/default.html");
 
         $page = View::render($page);
         $page = self::organizeHtml($page);
@@ -102,7 +100,6 @@ trait EnergizeRender
         ];
 
         $energize = self::getView(env('ENERGIZE_VIEW_BASE'), 'energize/energize.html');
-        $energize = $energize ?? '=' . (dirname(__DIR__, 3) . "/view/base/energize/energize.html");
 
         $energize = View::render($energize, $data);
 
@@ -173,6 +170,8 @@ trait EnergizeRender
             return $view;
 
         if (File::check("view/base/$defaultViewPath"))
-            return "=view/base/$defaultViewPath";
+            return "base/$defaultViewPath";
+
+        return dirname(__DIR__, 3) . "/view/base/$defaultViewPath";
     }
 }
