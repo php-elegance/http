@@ -9,7 +9,7 @@ use Exception;
 trait RouterEncaps
 {
     /** Encapsula um erro ou exception dentro de um json de resposta APIs */
-    static function encapsError(Error | Exception $e)
+    static function encapsCatch(Error | Exception $e)
     {
         $status = $e->getCode();
         $message = $e->getMessage();
@@ -17,47 +17,35 @@ trait RouterEncaps
         if (!is_httpStatus($status))
             $status = !is_class($e, Error::class) ? STS_BAD_REQUEST : STS_INTERNAL_SERVER_ERROR;
 
-        $info = is_json($message) ? json_decode($message, true) : ['message' => $message];
-
         $response = [
             'elegance' => true,
             'status' => $status,
-            'error' => $status > 299,
-            'type' => $info['type'] ?? null,
-            'origin' => $info['origin'] ?? null,
-            'data' => [
-                'message' => $info['message'] ?? null,
-                'description' => $info['description'] ?? null,
-            ]
+            'detail' => [],
+            'data' => []
         ];
 
-        if (is_blank($response['type'])) $response['type'] = match ($status) {
-            200, 201, 204 => '_success',
-            303, => '_redirect',
-            400, 401, 403, 404, 405, => '_default',
-            500, 501, 503 => '_error',
-            default => '_unknown'
-        };
+        switch ($status) {
+            case STS_REDIRECT:
+                $message = !empty($message) ? url($message) : url(true);
+                Response::header('location', $message);
+                $response['detail'] = ['to' => $message];
+                break;
+            default:
+                $detail = [];
+                if (!empty($message))
+                    $detail = is_json($message) ? json_decode($message, true) : ['message' => $message];
 
-        if ($response['type'] == '_error') $response['data']['message'] = null;
+                if ($status >= 500 && !env('DEV'))
+                    $detail = [];
 
-        if (is_blank($response['origin'])) $response['origin'] = '_system';
+                $response['detail'] = !empty($detail) ? $detail : [];
+        }
 
-        if (is_blank($response['data']['message'])) $response['data']['message'] = null;
-
-        if (is_blank($response['data']['description'])) $response['data']['description'] = null;
-
-        if (env('DEV')) $response['dbug'] = [
-            'code' => $e->getCode(),
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine()
-        ];
-
-        Response::type('json');
-        Response::status($status);
-        Response::cache(false);
         Response::content($response);
+
+        Response::status($status);
+        Response::type('json');
+        Response::cache(false);
     }
 
     /** Encapsula o conteúdo da resposta dentro de um json de resposta API */
@@ -73,23 +61,38 @@ trait RouterEncaps
         $response = [
             'elegance' => true,
             'status' => $status,
-            'error' => $status > 299,
-            'type' => $info['type'] ?? null,
-            'origin' => '_response',
+            'detail' => [],
             'data' => $content
         ];
 
-        if (is_blank($response['type'])) $response['type'] = match ($status) {
-            200, 201, 204 => '_success',
-            303, => '_redirect',
-            400, 401, 403, 404, 405, => '_default',
-            500, 501, 503 => '_error',
-            default => '_unknown'
-        };
-
         Response::type('json');
         Response::status($status);
-        Response::cache(false);
         Response::content($response);
     }
 }
+
+
+
+/**
+ * elegance: Se a resposta foi encapsulada por um backend elegance
+ * status: Stauts HTTP da resposta
+ * error: Se a resposta é referente a um erro (status > 399)
+ * type: Tipo de respota (default,input,render,redirect,error)
+ * detail: array com detahes da resposta dependendo do tipo
+ *  - DEFAULT
+ *      - message: Mensagem da resposta
+ *      - description: Descrição mais detalhada da resposta
+ *  - INPUT
+ *      - field: Nome do campo que enviou a resposta
+ *      - message: Mesagem da resposta
+ *      - description: Descrição mais detalhada da resposta
+ *  - RENDER
+ *      - NULL
+ *  - REDIRECT
+ *      - from: URL do direcionamento
+ *  - ERROR
+ *      - message: Mensagem da resposta (apenas DEV)
+ *      - description: Descrição mais detalhada da resposta (apenas DEV)
+ * 
+ * 
+ */

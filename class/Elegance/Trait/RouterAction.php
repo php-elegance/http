@@ -45,7 +45,7 @@ trait RouterAction
                 if (empty($__OUTPUT__))
                     return $__RETURN__;
 
-                return View::renderString($__OUTPUT__, 'html');
+                return View::renderString($__OUTPUT__, $data ?? []);
             })($file);
         }
 

@@ -6,9 +6,6 @@ define('STS_OK', 200);
 /** Criado */
 define('STS_CREATED', 201);
 
-/** Nenhum conteúdo */
-define('STS_NOT_CONTENT', 204);
-
 
 /** Redirecionamento */
 define('STS_REDIRECT', 303);

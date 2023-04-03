@@ -33,7 +33,8 @@ if (!function_exists('url')) {
         if (!is_null($base))
             $params = [$base, ...$params];
 
-        $url['scheme'] = $url['scheme'] ?? Request::ssl() ? 'https' : 'http';
+        $url['scheme'] = $url['scheme'] ?? (Request::ssl() ? 'https' : 'http');
+
         $url['host'] = $url['host'] ?? Request::host();
         $url['port'] = $url['port'] ?? Request::port();
 

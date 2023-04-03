@@ -115,13 +115,11 @@ abstract class Router
             $response = Middleware::run($middlewareQueue, $action);
 
             if (is_httpStatus($response))
-                throw new Exception(json_encode([
-                    'origin' => '_response'
-                ]), $response);
+                throw new Exception('', $response);
 
             self::encapsResponse($response);
         } catch (Exception | Error $e) {
-            self::encapsError($e);
+            self::encapsCatch($e);
         }
 
         if ($autoSend) Response::send();

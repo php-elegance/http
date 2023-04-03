@@ -87,10 +87,7 @@ class Input
     function error(string $message, mixed ...$parms): void
     {
         $error = [
-            'type' => 'input',
-            'origin' => 'input',
-            'message' => $message,
-            'description' => null
+            'message' => $message
         ];
 
         $status = STS_BAD_REQUEST;

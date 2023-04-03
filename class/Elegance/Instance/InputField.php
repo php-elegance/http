@@ -160,23 +160,21 @@ class InputField
     /** Lança um erro de input com os dados do objeto */
     function error(string $message, mixed ...$parms): never
     {
-        $info = [
-            'type' => 'input',
-            'origin' => $this->name,
+        $error = [
+            'field' => $this->name,
             'message' => $message,
-            'description' => null
         ];
 
         $status = STS_BAD_REQUEST;
 
         foreach ($parms as $param) {
             if (is_string($param))
-                $info['description'] = $param;
+                $error['description'] = $param;
             if (is_int($param))
                 $status = $param;
         }
 
-        throw new Exception(json_encode($info), $status);
+        throw new Exception(json_encode($error), $status);
     }
 
     /** Rodas as regras de validação do campo */

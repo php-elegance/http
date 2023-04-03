@@ -29,7 +29,19 @@ abstract class View
                 list($ref, $path, $name, $file, $type) = $info;
 
                 if (self::currentOpen($ref, $path, $name, $type, $data)) {
-                    $content = Import::output($file, self::current('data'));
+
+                    if ($type == 'php') {
+                        list($content, $data) = (function ($__FILEPATH__) {
+                            ob_start();
+                            require $__FILEPATH__;
+                            $__OUTPUT__ = ob_get_clean();
+                            return [$__OUTPUT__, $data ?? []];
+                        })($file);
+                        self::currentData($data, 1);
+                    } else {
+                        $content = Import::output($file, self::current('data'));
+                    }
+
                     $content = self::renderize($content, $params);
                     self::currentClose();
                 }
@@ -40,9 +52,10 @@ abstract class View
     }
 
     /** Renderiza uma string como uma view html */
-    static function renderString(string $string): string
+    static function renderString(string $string, array $data = []): string
     {
         self::currentOpen(null, null, null, 'html', []);
+        self::currentData($data, 1);
         $content = self::renderize($string);
         self::currentClose();
         return $content;

@@ -4,13 +4,10 @@ use Elegance\Response;
 
 if (!function_exists('redirect')) {
 
-    /** Redireciona o backend para uma url */
+    /** Lança uma exception de redirecionamento */
     function redirect(): never
     {
         $url = url(...func_get_args());
-        Response::header('location', $url);
-        Response::content($url);
-        Response::status(STS_REDIRECT);
-        Response::send();
+        throw new Exception(url(...func_get_args()), STS_REDIRECT);
     }
 }
