@@ -4,5 +4,6 @@
 
 /index.php
 /class/Controller
-/view
+/view/*
+!/view/base
 /app
