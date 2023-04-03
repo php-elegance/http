@@ -76,13 +76,16 @@ const energize = {
 
         if (resp.status > 399) {
           let hrefRedirect = `${energizeRouteError}?status=${resp.status}`;
-          if (href != hrefRedirect) return this.link(hrefRedirect);
-        } else {
-          resp = resp.data;
-          let elRender = document.getElementById(resp.render);
-          elRender.dataset.hash = resp.hash;
-          energize.update.content(elRender, resp.content);
-          energizeDinamicHead(resp.head);
+          if (href != hrefRedirect) this.link(hrefRedirect);
+          return;
+        }
+
+        if (resp.data.render) {
+          let elRender = document.getElementById(resp.data.render);
+          elRender.dataset.hash = resp.data.hash;
+          energize.update.content(elRender, resp.data.content);
+          energize.update.location(href);
+          energizeDinamicHead(resp.data.head);
           energize.core.run();
         }
       }
