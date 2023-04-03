@@ -101,8 +101,8 @@ trait EnergizeRender
             'routeError' => url(env('ENERGIZE_ROUTE_ERROR'))
         ];
 
-        $energize = self::getView(env('ENERGIZE_VIEW_BASE'), 'energize.html');
-        $energize = $energize ?? '=' . (dirname(__DIR__, 3) . "/view/base/energize.html");
+        $energize = self::getView(env('ENERGIZE_VIEW_BASE'), 'energize/energize.html');
+        $energize = $energize ?? '=' . (dirname(__DIR__, 3) . "/view/base/energize/energize.html");
 
         $energize = View::render($energize, $data);
 
