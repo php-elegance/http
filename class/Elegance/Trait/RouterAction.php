@@ -38,6 +38,8 @@ trait RouterAction
 
         if (File::check($file)) {
             $response = (function ($__FILEPATH__) {
+                $data = [];
+
                 ob_start();
                 $__RETURN__ = require $__FILEPATH__;
                 $__OUTPUT__ = ob_get_clean();
@@ -45,7 +47,7 @@ trait RouterAction
                 if (empty($__OUTPUT__))
                     return $__RETURN__;
 
-                return View::renderString($__OUTPUT__, $data ?? []);
+                return View::renderString($__OUTPUT__, $data);
             })($file);
         }
 
