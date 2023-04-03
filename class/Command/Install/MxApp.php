@@ -38,7 +38,9 @@ abstract class MxApp
         $basePath = dirname(__DIR__, 3);
 
         Dir::copy("$basePath/view/base", 'view/base');
+        File::copy("$basePath/library/assets/favicon.ico", 'library/assets/favicon.ico');
         File::copy("$basePath/library/assets/energize.js", 'library/assets/energize.js');
+        File::copy("$basePath/class/Middleware/Energize.php", 'class/Middleware/Energize.php');
 
         MxCmd::echo("Aplicação instalada");
     }

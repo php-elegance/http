@@ -1,8 +1,21 @@
 <?php
 
 use Elegance\Assets;
+use Elegance\File;
 use Elegance\Router;
 
-Router::get('favicon.ico', fn () => Assets::send(dirname(__DIR__, 2) . '/library/assets/favicon.ico'));
+Router::get('favicon.ico', function () {
+    $file = 'library/assets/favicon.ico';
 
-Router::get('energize.js', fn () => Assets::send(dirname(__DIR__, 2) . '/library/assets/energize.js'));
+    if (!File::check($file)) $file = dirname(__DIR__, 2) . "/$file";
+
+    Assets::send($file);
+});
+
+Router::get('energize.js', function () {
+    $file = 'library/assets/energize.js';
+
+    if (!File::check($file)) $file = dirname(__DIR__, 2) . "/$file";
+
+    Assets::send($file);
+});
