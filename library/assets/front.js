@@ -135,6 +135,12 @@ const front = {
           resolve(resp);
         };
 
+        if (!(data instanceof FormData)) {
+          var newData = new FormData();
+          for (let key in data) newData.append(key, data[key]);
+          data = newData;
+        }
+
         xhr.send(data);
       });
     },
