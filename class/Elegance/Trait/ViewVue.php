@@ -101,7 +101,7 @@ trait ViewVue
             'isApp' => $isApp,
             'isFull' => $isFull,
             'ref' => Code::on(self::current('ref')),
-            'name' => ucfirst($name ?? self::current('name')),
+            'name' => $name ?? self::current('name'),
             'script' => [],
             'style' => [],
             'incorp' => [],
