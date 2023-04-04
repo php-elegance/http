@@ -74,7 +74,7 @@ const front = {
 
         let resp = await this.api("get", href, null, headers);
 
-        if (resp.status > 399) {
+        if (resp.error) {
           let hrefRedirect = `${frontRouteError}?status=${resp.status}`;
           if (href != hrefRedirect) this.link(hrefRedirect);
           return;
@@ -116,6 +116,7 @@ const front = {
             front.action.link(xhr.getResponseHeader("New-Location"), true);
             resp = {
               elegance: true,
+              error: xhr.status > 399,
               staus: xhr.status,
               detail: {
                 to: xhr.getResponseHeader("New-Location"),
@@ -127,6 +128,7 @@ const front = {
           if (!resp.elegance)
             resp = {
               elegance: false,
+              error: xhr.status > 399,
               staus: xhr.status,
               detail: {},
               data: resp,
@@ -185,14 +187,14 @@ front.core.register("form[front]", (el) => {
       new FormData(el)
     );
 
-    let action = el.getAttribute(resp.status > 399 ? "onerror" : "onsuccess");
+    let action = el.getAttribute(resp.error ? "onerror" : "onsuccess");
 
     if (action) action = eval(action);
 
     if (action instanceof Function) return action(resp);
 
     if (showmessage) {
-      let message = resp.detail.message ?? (resp.status > 399 ? "erro" : "ok");
+      let message = resp.detail.message ?? (resp.error ? "erro" : "ok");
       let description = resp.detail.description ?? "";
       showmessage.innerHTML =
         `<span class='sts_${resp.status}'>` +
