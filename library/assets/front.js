@@ -105,7 +105,13 @@ const front = {
         var xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
 
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
         for (let key in headers) xhr.setRequestHeader(key, headers[key]);
+
+        if (data instanceof FormData) data = Object.fromEntries(data);
+
+        data = JSON.stringify({ ...data });
 
         xhr.responseType = "json";
 
@@ -138,12 +144,6 @@ const front = {
 
           resolve(resp);
         };
-
-        if (!(data instanceof FormData)) {
-          var newData = new FormData();
-          for (let key in data) newData.append(key, data[key]);
-          data = newData;
-        }
 
         xhr.send(data);
       });
