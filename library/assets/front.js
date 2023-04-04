@@ -194,10 +194,11 @@ front.core.register("form[front]", (el) => {
     if (action instanceof Function) return action(resp);
 
     if (showmessage) {
+      let spanClass = `sts_` + (resp.error ? "erro" : "success");
       let message = resp.detail.message ?? (resp.error ? "erro" : "ok");
       let description = resp.detail.description ?? "";
       showmessage.innerHTML =
-        `<span class='sts_${resp.status}'>` +
+        `<span class='sts_${resp.status} ${spanClass}'>` +
         `<span>${message}</span>` +
         `<span>${description}</span>` +
         `</span>`;
