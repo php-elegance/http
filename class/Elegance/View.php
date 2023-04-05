@@ -73,11 +73,10 @@ abstract class View
     {
         $renderClass = '\\Elegance\\ViewRender\\ViewRender' . ucfirst(self::current('type'));
 
-        if (class_exists($renderClass))
-            if (is_extend($renderClass, ViewRender::class))
-                $content = $renderClass::renderizeAction($content, $params);
-
-        $content = self::applyPrepare($content);
+        if (class_exists($renderClass) && is_extend($renderClass, ViewRender::class))
+            $content = $renderClass::renderizeAction($content, $params);
+        else
+            $content = self::applyPrepare($content);
 
         if (self::current('in'))
             $content = self::render(self::current('in'), ['content' => $content]);
