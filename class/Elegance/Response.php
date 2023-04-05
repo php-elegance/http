@@ -133,10 +133,10 @@ abstract class Response
         $cacheTime = self::$cache;
 
         if (is_null($cacheTime))
-            $cacheTime = env(strtoupper("RESPONSE_CACHE_$cacheType")) ?? env("RESPONSE_CACHE") ?? null;
+            $cacheTime = env(strtoupper("CACHE_$cacheType")) ?? env("CACHE") ?? null;
 
         if ($cacheTime === true)
-            $cacheTime = env("RESPONSE_CACHE") ?? null;
+            $cacheTime = env("CACHE") ?? null;
 
         if (!is_null($cacheTime)) {
             $cacheTime = intval($cacheTime);

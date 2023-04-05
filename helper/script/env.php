@@ -8,8 +8,4 @@ Env::default('CROS', true);
 
 Env::default('JWT', 'eleganceJwtPass');
 
-Env::default('RESPONSE_CACHE', null);
-
-Env::default('FRONT_VIEW_BASE', null);
-
-Env::default('FRONT_ROUTE_ERROR', 'error');
+Env::default('CACHE', null);
