@@ -39,6 +39,7 @@ class MdEncaps
         $response = [
             'elegance' => true,
             'status' => $status,
+            'error' => $status > 399,
             'detail' => [],
             'data' => []
         ];
@@ -85,6 +86,7 @@ class MdEncaps
         $response = [
             'elegance' => true,
             'status' => $status,
+            'error' => $status > 399,
             'detail' => [],
             'data' => $content
         ];
