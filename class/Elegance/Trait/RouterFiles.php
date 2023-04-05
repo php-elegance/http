@@ -13,9 +13,9 @@ trait RouterFiles
 
 
     /** Regrista um tipo de arquivo para ser rotado de forma amigavel (sem extensão) */
-    static function exFriendlyRoute(string $ex, $friendlyRoute = true)
+    static function exFriendlyRoute(string $ex, bool|string $friendlyRouteEx = true)
     {
-        self::$friendly[strtolower($ex)] = $friendlyRoute;
+        self::$friendly[strtolower($ex)] = $friendlyRouteEx;
     }
 
     /** Regirstra um tipo de reposta para conteúdo stirng em arquivo de um tipo */
@@ -37,9 +37,14 @@ trait RouterFiles
         $ex = File::getEx($route);
 
         if (self::$friendly[$ex] ?? false) {
-            $route = substr($route, 0, num_negative(strlen(".$ex")));
-            if (str_starts_with($route, '_index'))
-                $route = substr($route, 6);
+            if (is_bool(self::$friendly[$ex])) {
+                $route = substr($route, 0, num_negative(strlen(".$ex")));
+                if (str_starts_with($route, '_index'))
+                    $route = substr($route, 6);
+            } else {
+                $route = substr($route, 0, num_negative(strlen($ex)));
+                $route .= self::$friendly[$ex];
+            }
         }
 
         return $route;
