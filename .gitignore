@@ -3,7 +3,5 @@
 /mx
 
 /index.php
-/class/Controller
-/view/*
-!/view/base
+/view
 /app
