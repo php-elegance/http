@@ -20,7 +20,7 @@ abstract class Middleware
             $middleware = array_shift($queue);
             $middleware = self::getCallable($middleware);
             $next = fn () => self::execute($queue);
-            return $middleware($next);
+            return $middleware($next) ?? $next();
         }
         return null;
     }
