@@ -30,7 +30,6 @@
     "require": {
         "elegance/core": "dev-main",
         "elegance/mxcmd": "dev-main",
-        "elegance/cif-code": "dev-main",
-        "scssphp/scssphp": "dev-master"
+        "elegance/cif-code": "dev-main"
     }
 }
