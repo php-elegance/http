@@ -1,4 +1,4 @@
-<?php
+[#PHP]
 
 namespace Elegance;
 
@@ -6,8 +6,8 @@ chdir(__DIR__);
 
 require './vendor/autoload.php';
 
-Router::middleware('front', function () {
-    Router::add('', fn () => 'Elegance');
-});
+Router::middleware('encaps');
+
+Router::add('', 'Elegance');
 
 Router::solve();
