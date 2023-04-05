@@ -5,6 +5,7 @@ namespace Elegance;
 use Elegance\Trait\ViewCurrent;
 use Elegance\Trait\ViewPrepare;
 use Elegance\Trait\ViewSuportedType;
+use Elegance\ViewRender\ViewRender;
 
 abstract class View
 {
@@ -72,20 +73,15 @@ abstract class View
     {
         $renderClass = '\\Elegance\\ViewRender\\ViewRender' . ucfirst(self::current('type'));
 
-        if (class_exists($renderClass) && is_extend($renderClass, static::class))
-            $content = $renderClass::renderizeAction($content, $params);
+        if (class_exists($renderClass))
+            if (is_extend($renderClass, ViewRender::class))
+                $content = $renderClass::renderizeAction($content, $params);
 
         $content = self::applyPrepare($content);
 
         if (self::current('in'))
             $content = self::render(self::current('in'), ['content' => $content]);
 
-        return $content;
-    }
-
-    /** Aplica ações extras ao renderizar uma view */
-    protected static function renderizeAction($content, $params): string
-    {
         return $content;
     }
 
