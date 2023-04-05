@@ -6,32 +6,26 @@ use Closure;
 
 trait RouterMethod
 {
-    /** Agrupa rotas em um grupo  */
-    static function group(string $prefix, string|array $middlewares, Closure $action)
-    {
-        self::prefix($prefix, fn () => self::middleware($middlewares, $action));
-    }
-
     /** Adiciona uma rota para responder por requisições GET */
-    static function get(string $route, string|Closure $response)
+    static function get(string $route, int|string|Closure $response)
     {
         if (IS_GET) self::add($route, $response);
     }
 
     /** Adiciona uma rota para responder por requisições POST */
-    static function post(string $route, string|Closure $response)
+    static function post(string $route, int|string|Closure $response)
     {
         if (IS_POST) self::add($route, $response);
     }
 
     /** Adiciona uma rota para responder por requisições PUT */
-    static function put(string $route, string|Closure $response)
+    static function put(string $route, int|string|Closure $response)
     {
         if (IS_PUT) self::add($route, $response);
     }
 
     /** Adiciona uma rota para responder por requisições DELETE */
-    static function delete(string $route, string|Closure $response)
+    static function delete(string $route, int|string|Closure $response)
     {
         if (IS_DELETE) self::add($route, $response);
     }

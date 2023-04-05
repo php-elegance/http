@@ -4,7 +4,9 @@ namespace Elegance\Trait;
 
 use Closure;
 use Elegance\File;
+use Elegance\Import;
 use Elegance\Request;
+use Elegance\Response;
 use Elegance\View;
 use Exception;
 use ReflectionFunction;
@@ -13,13 +15,18 @@ use ReflectionMethod;
 
 trait RouterAction
 {
-    protected static function getAction($response): callable
+    protected static function getAction($response): Closure
     {
+        if (is_httpStatus($response))
+            return fn () => throw new Exception('', $response);
+
         if (is_string($response)) {
             if (str_starts_with($response, ':import:'))
                 return fn () => self::action_import(substr($response, 8));
+            if (str_starts_with($response, '@'))
+                return fn () => self::action_controller('controller.' . substr($response, 1));
 
-            return fn () => self::action_controller($response);
+            return fn () => $response;
         }
 
         if (is_closure($response))
@@ -28,27 +35,39 @@ trait RouterAction
         if (is_object($response))
             return fn () => self::action_object($response);
 
-        throw new Exception('Invalid response route', STS_INTERNAL_SERVER_ERROR);
+        return fn () => throw new Exception('Invalid response route', STS_INTERNAL_SERVER_ERROR);
     }
 
     protected static function action_import($file)
     {
         $file = path($file);
-        File::ensure_extension($file, 'php');
 
         if (File::check($file)) {
-            $response = (function ($__FILEPATH__) {
-                $data = [];
 
-                ob_start();
-                $__RETURN__ = require $__FILEPATH__;
-                $__OUTPUT__ = ob_get_clean();
+            $fileEx = strtolower(File::getEx($file));
 
-                if (empty($__OUTPUT__))
-                    return $__RETURN__;
+            if ($fileEx == 'php') {
+                $response = (function ($__FILEPATH__) {
+                    $__data = [];
+                    $__type = 'html';
 
-                return View::renderString($__OUTPUT__, $data);
-            })($file);
+                    ob_start();
+                    $__RETURN__ = require $__FILEPATH__;
+                    $__OUTPUT__ = ob_get_clean();
+
+                    if (empty($__OUTPUT__))
+                        return $__RETURN__;
+
+                    Response::type($__type);
+                    return View::renderString($__OUTPUT__, $__type, $__data);
+                })($file);
+            } else if (View::checkSuportedType($fileEx)) {
+                Response::type($fileEx);
+                $response = View::render('=' . $file);
+            } else {
+                Response::type($fileEx);
+                $response = Import::content($file);
+            }
         }
 
         if (is_closure($response))

@@ -7,11 +7,11 @@ use Elegance\Request;
 trait RouterUtil
 {
 
-    /** Limpa uma string para ser usada como prefixo de rota */
-    protected static function cls_prefix(string $prefix): string
+    /** Limpa uma string para ser usada como grupo de rotas */
+    protected static function cls_group(string $group): string
     {
-        $prefix = str_replace('...', '', $prefix);
-        return path("$prefix/");
+        $group = str_replace('...', '', $group);
+        return path("$group/");
     }
 
     /** Limpa uma string para ser usada como rota */

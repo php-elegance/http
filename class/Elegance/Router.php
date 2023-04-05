@@ -5,10 +5,8 @@ namespace Elegance;
 use Closure;
 use Elegance\Trait\RouterAction;
 use Elegance\Trait\RouterData;
-use Elegance\Trait\RouterEncaps;
 use Elegance\Trait\RouterMethod;
 use Elegance\Trait\RouterUtil;
-use Error;
 use Exception;
 
 abstract class Router
@@ -16,41 +14,46 @@ abstract class Router
     use RouterUtil;
     use RouterData;
     use RouterAction;
-    use RouterEncaps;
     use RouterMethod;
 
     protected static array $routes = [];
-    protected static array $prefix = [];
+    protected static array $group = [];
     protected static array $middlewares = [];
+    protected static array $globalMiddleware = [];
 
-    /** Adiciona um prefixo para multiplas rotas */
-    static function prefix(string $prefix, closure $action)
+    /** Adiciona um grupo para multiplas rotas */
+    static function group(string $group, closure $action)
     {
-        $currentPrefix = count(self::$prefix) ? end(self::$prefix) : '';
+        $currentPrefix = count(self::$group) ? end(self::$group) : '';
 
-        $prefix = self::cls_prefix("$currentPrefix/$prefix");
+        $group = self::cls_group("$currentPrefix/$group");
 
-        if (self::match("$prefix/...")) {
-            self::$prefix[] = $prefix;
+        if (self::match("$group/...")) {
+            self::$group[] = $group;
             $action();
-            array_pop(self::$prefix);
+            array_pop(self::$group);
         }
     }
 
     /** Adiciona middlewares para multiplas rotas */
-    static function middleware(string|array $middlewares, closure $action)
+    static function middleware(string|array|Closure $middlewares, ?closure $action = null)
     {
         $middlewares = is_array($middlewares) ? $middlewares : [$middlewares];
-        $currentMiddlewares = count(self::$middlewares) ? end(self::$middlewares) : [];
-        self::$middlewares[] = [...$currentMiddlewares, ...$middlewares];
-        $action();
-        array_pop(self::$middlewares);
+
+        if (!is_null($action)) {
+            $currentMiddlewares = count(self::$middlewares) ? end(self::$middlewares) : [];
+            self::$middlewares[] = [...$currentMiddlewares, ...$middlewares];
+            $action();
+            array_pop(self::$middlewares);
+        } else {
+            self::$globalMiddleware = [...self::$globalMiddleware, ...$middlewares];
+        }
     }
 
     /** Adiciona uma rota para responder por todas as requisições */
-    static function add(string $route, string|Closure $response)
+    static function add(string $route, int|string|Closure $response)
     {
-        $currentPrefix = count(self::$prefix) ? end(self::$prefix) : '';
+        $currentPrefix = count(self::$group) ? end(self::$group) : '';
         $currentMiddlewares = count(self::$middlewares) ? end(self::$middlewares) : [];
 
         $route = self::cls_route("$currentPrefix/$route");
@@ -77,11 +80,16 @@ abstract class Router
 
         foreach ($files as $file) {
             if ($file != '_.php') {
-                $route = substr($file, 0, -4);
+                $route = $file;
+
+                if (File::getEx($route) == 'php') $route = substr($route, 0, -4);
+
                 if (str_starts_with($route, '_index')) $route = substr($route, 6);
+
                 $routes[$route] = path($path, $file);
             }
         }
+
 
         self::middleware(
             $middleware,
@@ -90,38 +98,28 @@ abstract class Router
                     self::add($route, ":import:$response");
 
                 foreach (Dir::seek_for_dir($path) as $dir)
-                    self::prefix($dir, fn () => self::map("$path/$dir"));
+                    self::group($dir, fn () => self::map("$path/$dir"));
             }
         );
     }
 
     /** Executa a rota correspondente a URL atual */
-    static function solve($autoSend = true): void
+    static function solve()
     {
-        try {
-            self::organize(self::$routes);
+        self::organize(self::$routes);
 
-            $template = self::getTemplateMatch(array_keys(self::$routes));
+        $template = self::getTemplateMatch(array_keys(self::$routes));
 
-            $route = self::$routes[$template] ?? [
-                'response' => fn () => throw new Exception('Route not found', STS_NOT_FOUND)
-            ];
+        $route = self::$routes[$template] ?? [
+            'response' => fn () => throw new Exception('Route not found', STS_NOT_FOUND)
+        ];
 
-            self::setParamnsData($template, $route['params'] ?? null);
+        self::setParamnsData($template, $route['params'] ?? null);
 
-            $middlewareQueue = $route['middlewares'] ?? [];
-            $action = self::getAction($route['response']);
+        $middlewareQueue = [...self::$globalMiddleware, ...($route['middlewares'] ?? [])];
 
-            $response = Middleware::run($middlewareQueue, $action);
+        $action = self::getAction($route['response']);
 
-            if (is_httpStatus($response))
-                throw new Exception('', $response);
-
-            self::encapsResponse($response);
-        } catch (Exception | Error $e) {
-            self::encapsCatch($e);
-        }
-
-        if ($autoSend) Response::send();
+        return Middleware::run($middlewareQueue, $action);
     }
 }
