@@ -62,7 +62,7 @@ trait RouterAction
                     return View::renderString($__OUTPUT__, $__type, $__data);
                 })($file);
             } else if (View::checkSuportedType($fileEx)) {
-                Response::type($fileEx);
+                self::setDefaultResponsetype($fileEx);
                 $response = View::render('=' . $file);
             } else {
                 Response::type($fileEx);

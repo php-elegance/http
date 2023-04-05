@@ -5,6 +5,7 @@ namespace Elegance;
 use Closure;
 use Elegance\Trait\RouterAction;
 use Elegance\Trait\RouterData;
+use Elegance\Trait\RouterFiles;
 use Elegance\Trait\RouterMethod;
 use Elegance\Trait\RouterUtil;
 use Exception;
@@ -15,6 +16,7 @@ abstract class Router
     use RouterData;
     use RouterAction;
     use RouterMethod;
+    use RouterFiles;
 
     protected static array $routes = [];
     protected static array $group = [];
@@ -82,9 +84,7 @@ abstract class Router
             if ($file != '_.php') {
                 $route = $file;
 
-                if (File::getEx($route) == 'php') $route = substr($route, 0, -4);
-
-                if (str_starts_with($route, '_index')) $route = substr($route, 6);
+                $route = self::getFriendlyRoute($route);
 
                 $routes[$route] = path($path, $file);
             }
