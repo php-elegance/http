@@ -4,15 +4,13 @@ namespace Elegance;
 
 use Elegance\Trait\ViewCurrent;
 use Elegance\Trait\ViewPrepare;
-use Elegance\Trait\ViewVue;
-use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\OutputStyle;
+use Elegance\Trait\ViewSuportedType;
 
 abstract class View
 {
     use ViewPrepare;
     use ViewCurrent;
-    use ViewVue;
+    use ViewSuportedType;
 
     /** Renderiza uma view baseando em uma referencia de arquivo */
     static function render(string $ref, array $data = [], ...$params): string
@@ -28,25 +26,28 @@ abstract class View
             if ($info) {
                 list($ref, $path, $name, $file, $type) = $info;
 
-                if (self::currentOpen($ref, $path, $name, $type, $data)) {
+                if ($type == 'php') {
+                    $content = (function ($__FILEPATH__, $__PARAMS__) {
 
-                    if ($type == 'php') {
-                        list($content, $data) = (function ($__FILEPATH__, $__PARAMS__) {
-                            foreach (array_keys($__PARAMS__) as $__KEY__)
-                                if (!is_numeric($__KEY__))
-                                    $$__KEY__ = &$__PARAMS__[$__KEY__];
-                            ob_start();
-                            require $__FILEPATH__;
-                            $__OUTPUT__ = ob_get_clean();
-                            return [$__OUTPUT__, $data ?? []];
-                        })($file, self::current('data'));
-                        self::currentData($data, 1);
-                    } else {
+                        foreach (array_keys($__PARAMS__) as $__KEY__)
+                            if (!is_numeric($__KEY__))
+                                $$__KEY__ = $__PARAMS__[$__KEY__];
+
+                        $__data = [];
+                        $__type = 'html';
+
+                        ob_start();
+                        require $__FILEPATH__;
+                        $__OUTPUT__ = ob_get_clean();
+
+                        return View::renderString($__OUTPUT__, $__type, $__data);
+                    })($file, self::current('data'));
+                } else if (self::checkSuportedType($type)) {
+                    if (self::currentOpen($ref, $path, $name, $type, $data)) {
                         $content = Import::output($file, self::current('data'));
+                        $content = self::renderize($content, $params);
+                        self::currentClose();
                     }
-
-                    $content = self::renderize($content, $params);
-                    self::currentClose();
                 }
             }
         }
@@ -55,9 +56,11 @@ abstract class View
     }
 
     /** Renderiza uma string como uma view html */
-    static function renderString(string $string, array $data = []): string
+    static function renderString(string $string, string $type, array $data = []): string
     {
-        self::currentOpen(null, null, null, 'html', []);
+        if (!self::checkSuportedType($type)) return '';
+
+        self::currentOpen(null, null, null, $type, []);
         self::currentData($data, 1);
         $content = self::renderize($string);
         self::currentClose();
@@ -67,22 +70,22 @@ abstract class View
     /** Retorna a string da view atual renderizada */
     protected static function renderize(string $content, array $params = []): string
     {
-        if (self::current('type') == 'vue')
-            $content = self::renderVue($content, ...$params);
-        else
-            $content = self::applyPrepare($content);
+        $renderClass = '\\Elegance\\ViewRender\\ViewRender' . ucfirst(self::current('type'));
+
+        if (class_exists($renderClass) && is_extend($renderClass, static::class))
+            $content = $renderClass::renderizeAction($content, $params);
+
+        $content = self::applyPrepare($content);
 
         if (self::current('in'))
             $content = self::render(self::current('in'), ['content' => $content]);
 
-        if (self::current('type') == 'css' || self::current('type') == 'scss') {
-            if (count(self::$current) == 1 || !self::currentIn(['css', 'scss', 'vue'])) {
-                $scssCompiler = new Compiler();
-                $scssCompiler->setOutputStyle(OutputStyle::COMPRESSED);
-                $content = $scssCompiler->compileString($content)->getCss();
-            }
-        }
+        return $content;
+    }
 
+    /** Aplica ações extras ao renderizar uma view */
+    protected static function renderizeAction($content, $params): string
+    {
         return $content;
     }
 
