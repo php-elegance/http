@@ -70,7 +70,7 @@ abstract class Router
     }
 
     /** Adiciona uma rota para responder por todas as requisições */
-    static function map($path)
+    static function map($path, string $group = '')
     {
         $files = Dir::seek_for_file($path);
 
@@ -90,8 +90,7 @@ abstract class Router
             }
         }
 
-
-        self::middleware(
+        self::group($group, fn () => self::middleware(
             $middleware,
             function () use ($routes, $path) {
                 foreach ($routes as $route => $response)
@@ -100,7 +99,7 @@ abstract class Router
                 foreach (Dir::seek_for_dir($path) as $dir)
                     self::group($dir, fn () => self::map("$path/$dir"));
             }
-        );
+        ));
     }
 
     /** Executa a rota correspondente a URL atual */
