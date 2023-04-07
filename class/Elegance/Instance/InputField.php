@@ -121,7 +121,7 @@ class InputField
                 fn ($v) => $v == $rule->value,
                 $message ?? 'equal',
                 $description,
-                ['equal' => $rule->name]
+                ['equal' => $rule->alias]
             ];
         } else
         if (is_closure($rule)) {
