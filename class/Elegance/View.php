@@ -43,7 +43,7 @@ abstract class View
 
                                 return [$__OUTPUT__, $__type, $__data];
                             })($file, self::current('data'));
-                            self::current('data', $data);
+                            self::current('data', [...self::current('data'), ...$data]);
                             self::current('type', $type);
                         } else {
                             $content = Import::output($file, self::current('data'));
