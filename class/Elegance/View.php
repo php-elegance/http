@@ -26,26 +26,28 @@ abstract class View
 
             if ($info) {
                 list($ref, $path, $name, $file, $type) = $info;
-
-                if ($type == 'php') {
-                    $content = (function ($__FILEPATH__, $__PARAMS__) {
-
-                        foreach (array_keys($__PARAMS__) as $__KEY__)
-                            if (!is_numeric($__KEY__))
-                                $$__KEY__ = $__PARAMS__[$__KEY__];
-
-                        $__data = [];
-                        $__type = 'html';
-
-                        ob_start();
-                        require $__FILEPATH__;
-                        $__OUTPUT__ = ob_get_clean();
-
-                        return View::renderString($__OUTPUT__, $__type, $__data);
-                    })($file, self::current('data'));
-                } else if (self::checkSuportedType($type)) {
+                if (self::checkSuportedType($type)) {
                     if (self::currentOpen($ref, $path, $name, $type, $data)) {
-                        $content = Import::output($file, self::current('data'));
+                        if ($type == 'php') {
+                            list($content, $type, $data) = (function ($__FILEPATH__, $__PARAMS__) {
+                                foreach (array_keys($__PARAMS__) as $__KEY__)
+                                    if (!is_numeric($__KEY__))
+                                        $$__KEY__ = $__PARAMS__[$__KEY__];
+
+                                $__data = $__PARAMS__;
+                                $__type = 'html';
+
+                                ob_start();
+                                require $__FILEPATH__;
+                                $__OUTPUT__ = ob_get_clean();
+
+                                return [$__OUTPUT__, $__type, $__data];
+                            })($file, self::current('data'));
+                            self::current('data', $data);
+                            self::current('type', $type);
+                        } else {
+                            $content = Import::output($file, self::current('data'));
+                        }
                         $content = self::renderize($content, $params);
                         self::currentClose();
                     }

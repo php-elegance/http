@@ -2,6 +2,7 @@
 
 use Elegance\View;
 
+View::addSuportedType('php');
 View::addSuportedType('html');
 View::addSuportedType('css');
 View::addSuportedType('js');
