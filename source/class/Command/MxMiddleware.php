@@ -25,7 +25,7 @@ abstract class MxMiddleware
 
         $path = str_replace('\\', '/', $namespace);
 
-        $filePath = path("class/$path/$class.php");
+        $filePath = path("source/class/$path/$class.php");
 
         if (File::check($filePath))
             throw new Error("Arquivo [$filePath] já existe");
@@ -37,7 +37,7 @@ abstract class MxMiddleware
             'PHP' => '<?php'
         ];
 
-        $base = path(dirname(__DIR__, 2) . '/library/template/mx/middleware.txt');
+        $base = path(dirname(__DIR__, 3) . '/library/template/mx/middleware.txt');
 
         $content = Import::content($base, $prepare);
 

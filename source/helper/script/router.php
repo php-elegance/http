@@ -14,7 +14,7 @@ Router::get('favicon.ico', function () {
     if (File::check($file)) {
         Assets::load($file);
     } else {
-        Assets::load(dirname(__DIR__, 2) . "/$file");
+        Assets::load(dirname(__DIR__, 3) . "/$file");
         Response::cache(false);
     }
 

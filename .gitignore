@@ -1,7 +1,6 @@
+/composer.lock
 /vendor
-/.env
-/mx
 
 /index.php
-/view
-/app
+/.env
+/mx

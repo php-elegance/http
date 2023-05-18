@@ -13,7 +13,7 @@ abstract class MxIndex
         $fileName = "./index.php";
 
         if (!File::check($fileName)) {
-            $base = path(dirname(__DIR__, 3) . '/library/template/mx/index.txt');
+            $base = path(dirname(__DIR__, 4) . '/library/template/mx/index.txt');
 
             $base = Import::content($base);
 
