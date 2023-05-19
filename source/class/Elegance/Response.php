@@ -106,10 +106,10 @@ abstract class Response
         $cacheTime = self::$cache;
 
         if (is_null($cacheTime))
-            $cacheTime = env(strtoupper("CACHE_$cacheType")) ?? env("CACHE") ?? null;
+            $cacheTime = env(strtoupper("CACHE_$cacheType")) ?? env("CACHE");
 
         if ($cacheTime === true)
-            $cacheTime = env("CACHE") ?? null;
+            $cacheTime = env("CACHE");
 
         if (!is_null($cacheTime)) {
             $cacheTime = intval($cacheTime);
@@ -124,6 +124,8 @@ abstract class Response
                 $headerCache['Expires'] = '0';
             }
         }
+
+        $headerCache['Elegance-Cache'] = $cacheTime ? $cacheTime : 'false';
 
         return $headerCache ?? [];
     }
