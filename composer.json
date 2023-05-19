@@ -14,17 +14,7 @@
             "": "source/class/"
         },
         "files": [
-            "source/helper/constant/mimetype.php",
-            "source/helper/constant/request_is_type.php",
-            "source/helper/constant/response_http_code.php",
-            "source/helper/function/is_httpStatus.php",
-            "source/helper/function/redirect.php",
-            "source/helper/function/url.php",
-            "source/helper/function/view.php",
-            "source/helper/script/env.php",
-            "source/helper/script/router.php",
-            "source/helper/script/start.php",
-            "source/helper/script/view.php"
+            "source/helper/constant/request_type.php"
         ]
     },
     "require": {

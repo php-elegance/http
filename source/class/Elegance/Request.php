@@ -4,29 +4,28 @@ namespace Elegance;
 
 abstract class Request
 {
-    protected static $method;
+    protected static ?string $type = null;
+    protected static ?array $header = null;
+    protected static ?bool $ssl = null;
+    protected static ?string $host = null;
+    protected static ?array $path = null;
+    protected static ?array $query = null;
+    protected static ?array $data = null;
+    protected static array $route = [];
+    protected static ?array $file = null;
 
-    protected static $header;
-
-    protected static $ssl;
-    protected static $host;
-    protected static $port;
-
-    protected static $path;
-
-    protected static $query;
-    protected static $data;
-
-    protected static $files;
-
-    /** Retorna o metodo interpretado da requisição atual */
-    static function method(): string
+    /** Retorna/Compara o tipo da requisição atual (GET, POST, PUT, DELETE, OPTIONS,) */
+    static function type(): string
     {
-        self::$method = self::$method ?? self::current_method();
-        return self::$method;
+        self::$type = self::$type ?? self::current_type();
+
+        if (func_num_args())
+            return self::$type == strtoupper(func_get_arg(0));
+
+        return self::$type;
     }
 
-    /** Retorna um ou todos os cabeçalhos da requisição atual */
+    /** Retorna um ou todos os parametros header da requisição atual */
     static function header(): mixed
     {
         self::$header = self::$header ?? self::current_header();
@@ -37,32 +36,26 @@ abstract class Request
         return self::$header;
     }
 
-    /** Verifica se a requisição atual utiliza HTTPS */
+    /** Retorna/Compara o status de utilização SSL da requisição atual */
     static function ssl(): bool
     {
         self::$ssl = self::$ssl ?? self::current_ssl();
 
+        if (func_num_args())
+            return self::$ssl == func_get_arg(0);
+
         return self::$ssl;
     }
 
-    /** Retorna o host usado na requisição atual */
+    /** Retorna o host da requisiçaõ atual */
     static function host(): string
     {
         self::$host = self::$host ?? self::current_host();
-
         return self::$host;
     }
 
-    /** Retorna a porta usado na requisição atual */
-    static function port(): string
-    {
-        self::$port = self::$port ?? self::current_port();
-
-        return self::$port;
-    }
-
-    /** Retorna um ou todos os caminhos da URI da requisição atual */
-    static function path(): mixed
+    /** Retorna ou o todos os caminhos da URI da requisição atual */
+    static function path(): array|string
     {
         self::$path = self::$path ?? self::current_path();
 
@@ -72,7 +65,7 @@ abstract class Request
         return self::$path;
     }
 
-    /** Retorna um ou todos os dados passados na QUERY GET da requisição atual */
+    /** Retorna ou o todos os parametros passados via query na requisição autal */
     static function query(): mixed
     {
         self::$query = self::$query ?? self::current_query();
@@ -94,63 +87,83 @@ abstract class Request
         return self::$data;
     }
 
+    /** Retorna um ou todos os dados enviados via rota para a requisição atual */
+    static function route(): mixed
+    {
+        if (func_num_args())
+            return self::$route[func_get_arg(0)] ?? null;
+
+        return self::$route;
+    }
+
     /** Retorna um o todos os arquivos enviados na requisição atual */
     static function file(): array
     {
-        self::$files = self::$files ?? self::current_file();
+        self::$file = self::$file ?? self::current_file();
 
         if (func_num_args())
-            return self::$files[func_get_arg(0)] ?? [];
+            return self::$file[func_get_arg(0)] ?? [];
 
-        return self::$files;
+        return self::$file;
     }
 
-    /** Define/Altera um cabeçalho da requisição atual */
-    static function setHeader(string $name, mixed $value): void
+    #==| SET |==#
+
+    /** Define o valor de um parametro header da requisição atual */
+    static function set_header(string|int $name, mixed $value): void
     {
         self::$header = self::$header ?? self::current_header();
         self::$header[$name] = $value;
     }
 
-    /** Define/Altera um dos dados passados via QUERY GET na requisiçaõ atual */
-    static function setQuery(string $name, mixed $value): void
+    /** Define o valor de um parametro query da requisição atual */
+    static function set_query(string|int $name, mixed $value): void
     {
         self::$query = self::$query ?? self::current_query();
         self::$query[$name] = $value;
     }
 
-    /** Define/Altera um  dos dados enviados no corpo da requisição atual */
-    static function setData(string $name, mixed $value): void
+    /** Define o valor de um parametro do corpo da requisição atual */
+    static function set_data(string|int $name, mixed $value): void
     {
         self::$data = self::$data ?? self::current_data();
         self::$data[$name] = $value;
     }
 
-    protected static function current_method(): string
+    /** Define o valor de um parametro de rota da requisição atual */
+    static function set_route(string|int $name, mixed $value): void
     {
-        return strtoupper($_SERVER['REQUEST_METHOD'] ?? 'TERMINAL');
+        self::$route[$name] = $value;
     }
+
+    #==| LOAD |==#
 
     protected static function current_header(): array
     {
         return IS_TERMINAL ? [] : getallheaders();
     }
 
+    protected static function current_type(): string
+    {
+        return match (true) {
+            IS_TERMINAL => 'TERMINAL',
+            IS_GET => 'GET',
+            IS_POST => 'POST',
+            IS_PUT => 'PUT',
+            IS_DELETE => 'DELETE',
+            IS_OPTIONS => 'OPTIONS',
+            default => 'UNDEFINED',
+        };
+    }
+
     protected static function current_ssl(): bool
     {
-        return boolval(env('FORCE_SSL') ?? strtolower($_SERVER['HTTPS'] ?? '') == 'on');
+        return env('FORCE_SSL') ?? strtolower($_SERVER['HTTPS'] ?? '') == 'on';
     }
 
     protected static function current_host(): string
     {
-        $server = $_SERVER['HTTP_HOST'] ?? '';
-        $server = explode(':', $server);
-        return array_shift($server);
-    }
-
-    protected static function current_port(): string
-    {
-        return $_SERVER['SERVER_PORT'] ?? '';
+        return $_SERVER['HTTP_HOST'] ?? 'undefined';
     }
 
     protected static function current_path(): array
@@ -161,7 +174,6 @@ abstract class Request
             $path = array_shift($path);
             $path = trim($path, '/');
             $path = explode('/', $path);
-
             $path = array_filter($path, fn ($path) => !is_blank($path));
         }
         return $path ?? [];
@@ -169,13 +181,10 @@ abstract class Request
 
     protected static function current_query(): array
     {
-        if (!IS_TERMINAL) {
-            $query = $_SERVER['REQUEST_URI'];
-            $query = parse_url($query)['query'] ?? '';
-            parse_str($query, $query);
-        }
-
-        return $query ?? [];
+        $query = $_SERVER['REQUEST_URI'];
+        $query = parse_url($query)['query'] ?? '';
+        parse_str($query, $query);
+        return $query;
     }
 
     protected static function current_data(): array
