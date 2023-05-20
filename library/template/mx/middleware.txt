@@ -1,0 +1,13 @@
+[#PHP]
+
+namespace [#namespace];
+
+use Closure;
+
+class [#class]
+{
+    function __invoke(Closure $next)
+    {
+        return $next();
+    }
+}
