@@ -17,6 +17,7 @@
             "source/helper/constant/mimetype.php",
             "source/helper/constant/request_type.php",
             "source/helper/constant/response_http_code.php",
+            "source/helper/function/is_httpStatus.php",
             "source/helper/script/env.php",
             "source/helper/script/start.php"
         ]

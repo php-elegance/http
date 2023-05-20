@@ -6,10 +6,8 @@ define('STS_OK', 200);
 /** Criado */
 define('STS_CREATED', 201);
 
-
 /** Redirecionamento */
 define('STS_REDIRECT', 303);
-
 
 /** Sintaxe intorreta */
 define('STS_BAD_REQUEST', 400);
@@ -25,7 +23,6 @@ define('STS_NOT_FOUND', 404);
 
 /** Método não permitido */
 define('STS_METHOD_NOT_ALLOWED', 405);
-
 
 /** Erro interno do servidor */
 define('STS_INTERNAL_SERVER_ERROR', 500);
