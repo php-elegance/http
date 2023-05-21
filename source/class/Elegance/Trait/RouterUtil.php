@@ -7,7 +7,6 @@ use Elegance\Request;
 trait RouterUtil
 {
 
-    /** Limpa uma string para ser usada como rota */
     protected static function cls_route(string $route): string
     {
         $route = str_replace(['[...]', '+', '['], ['...', '/', '[#'], $route);
@@ -21,7 +20,6 @@ trait RouterUtil
         return $route;
     }
 
-    /** Explode uma rota em um array de template e params */
     protected static function explodeRoute(string $route)
     {
         $params = [];
@@ -43,8 +41,7 @@ trait RouterUtil
         return [$route, $params];
     }
 
-    /** Organiza um array de templates para interpretação */
-    protected static function organize(array &$array): void
+    protected static function organize(array $array): array
     {
         uksort($array, function ($a, $b) {
             $nBarrA = substr_count($a, '/');
@@ -85,12 +82,15 @@ trait RouterUtil
 
             if ($result) return $result * -1;
         });
+
+        return $array;
     }
 
-    /** Retorna o template de rota que corresponde a URI atual */
-    protected static function getTemplateMatch(array $templates): ?string
+    protected static function getTemplateMatch(array $routes): ?string
     {
-        $templates = array_keys($templates);
+        $routes = self::organize($routes);
+
+        $templates = array_keys($routes);
 
         foreach ($templates as $template)
             if (self::match($template))
@@ -99,7 +99,21 @@ trait RouterUtil
         return null;
     }
 
-    /** Verifica se uma rota pode ser utilizada em uma URI */
+    protected static function getTemplateMiddlewareMatch(array $middlewares): array
+    {
+        $middlewares = self::organize($middlewares);
+
+        $templates = array_keys($middlewares);
+
+        $queue = [];
+
+        foreach ($templates as $template)
+            if (self::match($template))
+                $queue = $middlewares[$template];
+
+        return $queue;
+    }
+
     protected static function match($route): bool
     {
         $route = self::cls_route($route);
@@ -138,7 +152,6 @@ trait RouterUtil
         return true;
     }
 
-    /** Define as variaveis de rota na requisição atual */
     protected static function setParamnsData(?string $template, ?array $params): void
     {
         $data = [];
