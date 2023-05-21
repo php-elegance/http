@@ -48,6 +48,9 @@ abstract class Middleware
 
         if (is_string($middleware)) {
 
+            if (str_starts_with($middleware, '::'))
+                return fn ($next) => self::run(Import::return(substr($middleware, 2)), $next);
+
             $class = explode('.', $middleware);
             $class = array_map(fn ($value) => ucfirst($value), $class);
             $class[] = 'Md' . array_pop($class);

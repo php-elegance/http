@@ -34,6 +34,31 @@ abstract class Router
         self::$middleware[$route][] = $middleware;
     }
 
+    /** Mapeia um diertório adicionando todas as rotas e middlewares */
+    static function map(string $path, string $inRoute = '')
+    {
+        $files = Dir::seek_for_file($path, true);
+
+        foreach ($files as $file) {
+            $ex = File::getEx($file);
+            $route = substr($file, 0, num_negative(strlen(".$ex")));
+            $route = "$inRoute/$route";
+            $response = "::" . path($path, $file);
+
+            if (str_ends_with($route, '/_')) {
+                $route = substr($route, 0, -2);
+                self::middleware("$route...", $response);
+            } else {
+                if (str_ends_with($route, '/index')) {
+                    $route = substr($route, 0, -5);
+                    self::add($route, $response);
+                } else {
+                    self::add($route, $response);
+                }
+            }
+        }
+    }
+
     /** Reolve as rotas registradas retornando o resultado */
     static function solve()
     {
