@@ -9,3 +9,5 @@ Env::default('CROS', true);
 Env::default('CACHE', null);
 
 Env::default('SESSION_TIME', 24);
+
+Env::default('JWT', 'eleganceJwtPass');
