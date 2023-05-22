@@ -21,6 +21,12 @@ abstract class Assets
         Response::send();
     }
 
+    /** Carrega um arquivo na resposta da aplicação */
+    static function load(): void
+    {
+        self::loadResponse(...func_get_args());
+    }
+
     /** Retorna o ResponseFile do arquivo */
     protected static function loadResponse(): void
     {

@@ -19,6 +19,7 @@
             "source/helper/constant/response_http_code.php",
             "source/helper/function/is_httpStatus.php",
             "source/helper/script/env.php",
+            "source/helper/script/router.php",
             "source/helper/script/start.php"
         ]
     },
