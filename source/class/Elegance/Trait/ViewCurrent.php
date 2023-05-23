@@ -11,9 +11,9 @@ trait ViewCurrent
     /** Inicializa uma view como atual */
     static function currentOpen($key, $path, $file, $type, array $data): bool
     {
-        if (is_null($key) || $key != self::currentGet_key()) {
+        if (is_null($key) || $key != self::currentGet_key() && !isset(self::$current[$key])) {
             $currentData = self::currentGet_data() ?? [];
-            self::$current[] = [
+            self::$current[$key] = [
                 'key' => $key,
                 'path' => $path,
                 'file' => $file,

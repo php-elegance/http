@@ -102,17 +102,17 @@ abstract class View
                 self::getSuportedType($type), //TYPE
             ];
 
-        $path = str_starts_with($viewRef, '@') ? substr($viewRef, 1) : path(self::currentGet_path(), $viewRef);
-        $file = path('view', $path);
+        $viewRef = str_starts_with($viewRef, '@') ? substr($viewRef, 1) : path(self::currentGet_path(), $viewRef);
+        $file = path('view', $viewRef);
 
         if (!File::check($file)) {
-            $name = File::getOnly($path);
+            $name = File::getOnly($viewRef);
             $name = explode('.', $name);
             $name = array_slice($name, 0, -1);
             $name = implode('.', $name);
 
-            $path = path(Dir::getOnly($path), $name, File::getOnly($path));
-            $file = path('view', $path);
+            $viewRef = path(Dir::getOnly($viewRef), $name, File::getOnly($viewRef));
+            $file = path('view', $viewRef);
 
             if (!File::check($file))
                 return false;
@@ -120,7 +120,7 @@ abstract class View
 
         return [
             md5($viewRef), //KEY
-            Dir::getOnly($path), //PATH
+            Dir::getOnly($viewRef), //PATH
             $file, //FILE
             self::getSuportedType($type), //TYPE
         ];
