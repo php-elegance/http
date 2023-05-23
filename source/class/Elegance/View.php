@@ -67,6 +67,7 @@ abstract class View
         self::currentOpen(null, null, null, $type, $data);
         $content = self::renderize($string);
         self::currentClose();
+
         return $content;
     }
 

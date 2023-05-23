@@ -7,6 +7,7 @@ use Elegance\File;
 use Elegance\Import;
 use Elegance\Request;
 use Elegance\Response;
+use Elegance\View;
 use Exception;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -40,7 +41,14 @@ trait RouterAction
             $fileEx = strtolower(File::getEx($file));
 
             if ($fileEx == 'php') {
-                $response = (function ($__FILEPATH__) {
+                $response = (function ($__FILEPATH__, $__PARAMS__) {
+                    foreach (array_keys($__PARAMS__) as $__KEY__)
+                        if (!is_numeric($__KEY__))
+                            $$__KEY__ = $__PARAMS__[$__KEY__];
+
+                    $__DATA = $__PARAMS__;
+                    $__TYPE = 'html';
+
                     ob_start();
                     $__RETURN__ = require $__FILEPATH__;
                     $__OUTPUT__ = ob_get_clean();
@@ -48,11 +56,16 @@ trait RouterAction
                     if (empty($__OUTPUT__))
                         return $__RETURN__;
 
-                    return $__OUTPUT__;
-                })($file);
+                    Response::type(View::getSuportedType($__TYPE));
+                    return View::renderString($__OUTPUT__, $__DATA, $__TYPE);
+                })($file, Request::route());
+            } else if (View::checkSuportedType($fileEx)) {
+                Response::type(View::getSuportedType($fileEx));
+                $content = Import::content($file);
+                $response = View::renderString($content,  Request::route(), $fileEx);
             } else {
                 Response::type($fileEx);
-                $response = Import::content($file);
+                $response = Import::content($file, Request::route());
             }
         }
 
