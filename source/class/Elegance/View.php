@@ -18,6 +18,7 @@ abstract class View
             $viewRef =  substr($viewRef, 2);
             self::currentSet_encpas($viewRef);
         } else {
+
             $info = self::getInfoRef($viewRef);
 
             if ($info) {
@@ -93,7 +94,15 @@ abstract class View
         if (!self::checkSuportedType($type))
             return false;
 
-        $path = path(self::currentGet_path(), $viewRef);
+        if (str_starts_with($viewRef, '='))
+            return [
+                md5($viewRef), //KEY
+                null, //PATH
+                substr($viewRef, 1), //FILE
+                self::getSuportedType($type), //TYPE
+            ];
+
+        $path = str_starts_with($viewRef, '@') ? substr($viewRef, 1) : path(self::currentGet_path(), $viewRef);
         $file = path('view', $path);
 
         if (!File::check($file)) {
