@@ -192,10 +192,9 @@ abstract class Request
         if (IS_GET) {
             $data = [];
             $inputData = file_get_contents('php://input');
+
             if (is_json($inputData))
                 $data = json_decode($inputData, true);
-            else
-                parse_str($inputData, $data);
 
             if (!is_blank($data))
                 return $data;
