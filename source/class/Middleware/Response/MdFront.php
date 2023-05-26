@@ -25,11 +25,15 @@ class MdFront
             };
 
             if ($url && $url != url(true)) {
-                $info = [
-                    'code' => $e->getCode(),
-                    'url' => url(true)
-                ];
-                $url = url($url, ['info' => Cif::on($info, 'E')]);
+
+                if ($e->getCode() != STS_REDIRECT) {
+                    $info = [
+                        'code' => $e->getCode(),
+                        'url' => url(true)
+                    ];
+                    $url = url($url, ['info' => Cif::on($info, 'E')]);
+                }
+
                 if (Request::header('Front-Request')) {
                     Response::cache(false);
                     Response::header('Front-Location', $url);
@@ -37,8 +41,8 @@ class MdFront
                 }
                 redirect($url);
             }
-        }
 
-        throw $e;
+            throw $e;
+        }
     }
 }

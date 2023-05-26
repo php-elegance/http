@@ -122,9 +122,9 @@ const front = {
             xhr.onload = async () => {
                 let resp = xhr.response;
 
-                if (xhr.getResponseHeader("New-Location")) {
+                if (xhr.getResponseHeader("Front-Location")) {
                     front.core.WORKING = false;
-                    return resolve(await front.go(xhr.getResponseHeader("New-Location"), true));
+                    return resolve(await front.go(xhr.getResponseHeader("Front-Location"), true));
                 }
 
                 if (!resp.elegance) resp = {
