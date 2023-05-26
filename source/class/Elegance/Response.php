@@ -33,14 +33,15 @@ abstract class Response
     }
 
     /** Define o contentType da resposta */
-    static function type(?string $type)
+    static function type(?string $type, bool $replace = true)
     {
         if ($type) {
             $type = trim($type, '.');
             $type = strtolower($type);
             $type = EX_MIMETYPE[$type] ?? $type;
         }
-        self::$type = $type;
+
+        self::$type = $replace ? $type : (self::$type ?? $type);
     }
 
     /** Define o conteúdo da resposta */

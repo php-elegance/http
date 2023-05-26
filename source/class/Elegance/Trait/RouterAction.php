@@ -56,15 +56,15 @@ trait RouterAction
                     if (empty($__OUTPUT__))
                         return $__RETURN__;
 
-                    Response::type(View::getSuportedType($__TYPE));
+                    Response::type(View::getSuportedType($__TYPE), false);
                     return View::renderString($__OUTPUT__, $__DATA, $__TYPE);
                 })($file, Request::route());
             } else if (View::checkSuportedType($fileEx)) {
-                Response::type(View::getSuportedType($fileEx));
+                Response::type(View::getSuportedType($fileEx), false);
                 $content = Import::content($file);
                 $response = View::renderString($content,  Request::route(), $fileEx);
             } else {
-                Response::type($fileEx);
+                Response::type($fileEx, false);
                 $response = Import::content($file, Request::route());
             }
         }

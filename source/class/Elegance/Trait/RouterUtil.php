@@ -109,7 +109,7 @@ trait RouterUtil
 
         foreach ($templates as $template)
             if (self::match($template))
-                $queue = $middlewares[$template];
+                $queue[] = $middlewares[$template];
 
         return $queue;
     }
