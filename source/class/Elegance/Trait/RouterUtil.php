@@ -107,9 +107,16 @@ trait RouterUtil
 
         $queue = [];
 
-        foreach ($templates as $template)
-            if (self::match($template))
-                $queue[] = $middlewares[$template];
+        foreach ($templates as $template) {
+            if (str_starts_with($template, '!')) {
+                if (!self::match(substr($template, 1)))
+                    $queue[] = $middlewares[$template];
+            } else {
+                if (self::match($template))
+                    $queue[] = $middlewares[$template];
+            }
+        }
+
 
         return array_reverse($queue);
     }
