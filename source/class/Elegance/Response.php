@@ -80,6 +80,20 @@ abstract class Response
         die($content);
     }
 
+    #==| GET |==#
+
+    /** Retorna o status atual da resposta */
+    static function getStatus(): ?int
+    {
+        return self::$status;
+    }
+
+    /** Retorna o conteúdo atual da resposta */
+    static function getContent(): ?string
+    {
+        return self::$content;
+    }
+
     #==| Mount |==#
 
     /** Retorna conteúdo da resposta */
