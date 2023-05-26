@@ -83,7 +83,7 @@ const front = {
         if (!resp.elegance)
             return await front.redirect(url);
 
-        if (resp.error)
+        if (resp.info.error)
             return;
 
         front.core.update.head(resp.data.head);
@@ -101,6 +101,7 @@ const front = {
     submit: (method, url = null, data = {}) => new Promise(async (resolve, reject) => {
         return resolve(await front.request(method, url, data))
     }),
+
     request: (method, url = null, data = {}, header = {}) => front.core.solve(() =>
         new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
@@ -112,9 +113,12 @@ const front = {
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.setRequestHeader("Front-Request", method);
 
-            for (let key in header) xhr.setRequestHeader(key, header[key]);
+            for (let key in header)
+                xhr.setRequestHeader(key, header[key]);
 
-            if (data instanceof FormData) data = Object.fromEntries(data);
+            if (data instanceof FormData)
+                data = Object.fromEntries(data);
+
             data = JSON.stringify({ ...data });
 
             xhr.responseType = "json";
@@ -129,9 +133,10 @@ const front = {
 
                 if (!resp.elegance) resp = {
                     elegance: false,
-                    error: xhr.status > 399,
-                    staus: xhr.status,
-                    detail: {},
+                    info: {
+                        error: xhr.status > 399,
+                        staus: xhr.status
+                    },
                     data: resp,
                 };
 
@@ -141,6 +146,7 @@ const front = {
             xhr.send(data);
         })
     ),
+
     redirect: (url) => new Promise((resolve, reject) => {
         window.location.href = url;
         return resolve('ok');
@@ -158,7 +164,7 @@ front.core.register("form[front]", (el) => {
     el.addEventListener("submit", async (ev) => {
         ev.preventDefault();
 
-        let showmessage = el.querySelector(".front-alert");
+        let showmessage = el.querySelector(".form-alert");
 
         if (showmessage) showmessage.innerHTML = "";
 
@@ -176,8 +182,8 @@ front.core.register("form[front]", (el) => {
 
         if (showmessage) {
             let spanClass = `sts_` + (resp.error ? "erro" : "success");
-            let message = resp.detail.message ?? (resp.error ? "erro" : "ok");
-            let description = resp.detail.description ?? "";
+            let message = resp.info.message ?? (resp.error ? "erro" : "ok");
+            let description = resp.info.description ?? "";
             showmessage.innerHTML =
                 `<span class='sts_${resp.status} ${spanClass}'>` +
                 `<span>${message}</span>` +

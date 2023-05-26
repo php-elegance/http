@@ -68,10 +68,10 @@ abstract class Front
             Response::type('json');
             Response::status(STS_OK);
             Response::content([
-                'elegance' => [
+                'elegance' => true,
+                'info' => [
                     'status' => STS_OK,
                     'error' => false,
-                    'detail' => null,
                 ],
                 'data' => self::renderToArray($content),
             ]);

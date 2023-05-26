@@ -38,10 +38,10 @@ class MdApi
             $status = !is_class($e, Error::class) ? STS_BAD_REQUEST : STS_INTERNAL_SERVER_ERROR;
 
         $response = [
-            'elegance' => [
+            'elegance' => true,
+            'info' => [
                 'status' => $status,
-                'error' => $status > 399,
-                'detail' => []
+                'error' => $status > 399
             ],
             'data' => []
         ];
@@ -50,22 +50,22 @@ class MdApi
             case STS_REDIRECT:
                 $message = !empty($message) ? url($message) : url(true);
                 Response::header('location', $message);
-                $response['elegance']['detail'] = ['to' => $message];
+                $response['info'] = ['to' => $message];
                 break;
             default:
-                $detail = [];
+                $info = [];
                 if (!empty($message))
-                    $detail = is_json($message) ? json_decode($message, true) : ['message' => $message];
+                    $info = is_json($message) ? json_decode($message, true) : ['message' => $message];
 
                 if ($status >= 500 && !env('DEV'))
-                    $detail = [];
+                    $info = [];
 
-                $response['elegance']['detail'] = !empty($detail) ? $detail : [];
+                $response['info'] = !empty($info) ? $info : [];
         }
 
         if (env('DEV')) {
-            $response['elegance']['detail']['file'] = $e->getFile();
-            $response['elegance']['detail']['line'] = $e->getLine();
+            $response['info']['file'] = $e->getFile();
+            $response['info']['line'] = $e->getLine();
 
             Response::header('Error-File', $e->getFile());
             Response::header('Error-Line', $e->getLine());
@@ -88,10 +88,10 @@ class MdApi
             $status = STS_OK;
 
         $response = [
-            'elegance' => [
+            'elegance' => true,
+            'info' => [
                 'status' => $status,
-                'error' => $status > 399,
-                'detail' => [],
+                'error' => $status > 399
             ],
             'data' => $content
         ];
