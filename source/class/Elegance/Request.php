@@ -184,6 +184,9 @@ abstract class Request
         $query = $_SERVER['REQUEST_URI'];
         $query = parse_url($query)['query'] ?? '';
         parse_str($query, $query);
+
+        $query = array_map(fn ($v) => urlencode($v), $query);
+
         return $query;
     }
 
