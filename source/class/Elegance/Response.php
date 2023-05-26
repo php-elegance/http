@@ -16,9 +16,9 @@ abstract class Response
     protected static ?string $downloadName = null;
 
     /** Define o status HTTP da resposta */
-    static function status(?int $status)
+    static function status(?int $status, bool $replace = true)
     {
-        self::$status = $status ?? self::$status;
+        self::$status = $replace ? $status : (self::$status ?? $status);
     }
 
     /** Define um cabeçalho para a resposta */
@@ -45,9 +45,9 @@ abstract class Response
     }
 
     /** Define o conteúdo da resposta */
-    static function content(mixed $content)
+    static function content(mixed $content, bool $replace = true)
     {
-        self::$content = $content;
+        self::$content = $replace ? $content : (self::$content ?? $content);
     }
 
     /** Define se o arquivo deve ser armazenado em cache */
