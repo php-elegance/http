@@ -43,7 +43,7 @@ class MdApi
                 'error' => $status > 399,
                 'detail' => []
             ],
-            'data' => null
+            'data' => []
         ];
 
         switch ($status) {
@@ -91,7 +91,7 @@ class MdApi
             'elegance' => [
                 'status' => $status,
                 'error' => $status > 399,
-                'detail' => null,
+                'detail' => [],
             ],
             'data' => $content
         ];
