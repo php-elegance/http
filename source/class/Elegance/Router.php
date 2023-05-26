@@ -25,8 +25,13 @@ abstract class Router
     }
 
     /** Adiciona uma middleware para ser executada em uma rota */
-    static function middleware(string $route, array|string|Closure $middleware)
+    static function middleware(string|array $route, array|string|Closure $middleware = [])
     {
+        if (func_num_args() == 1) {
+            $middleware = $route;
+            $route = '...';
+        }
+
         $route = self::cls_route($route);
 
         self::$middleware[$route] = self::$middleware[$route] ?? [];

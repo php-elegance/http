@@ -5,6 +5,7 @@ namespace Elegance;
 use Elegance\Trait\ViewCurrent;
 use Elegance\Trait\ViewPrepare;
 use Elegance\Trait\ViewSuportedTypes;
+use Elegance\ViewRender\ViewRender;
 
 abstract class View
 {
