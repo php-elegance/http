@@ -111,7 +111,7 @@ trait RouterUtil
             if (self::match($template))
                 $queue[] = $middlewares[$template];
 
-        return $queue;
+        return array_reverse($queue, true);
     }
 
     protected static function match($route): bool
