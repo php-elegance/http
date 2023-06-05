@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const front = {
     core: {
-        URL_VUE_JS: "https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js",
+        URL_VUE_JS: "/vue.js",
         BASE_HOST: (new URL(window.location)).hostname,
         WORKING: false,
         REGISTRED: {},
