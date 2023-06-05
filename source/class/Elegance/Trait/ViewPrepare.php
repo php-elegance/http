@@ -28,7 +28,7 @@ trait ViewPrepare
     }
 
     /** Aplica os prepare de view em uma string */
-    protected static function applyPrepare($string)
+    static function applyPrepare($string)
     {
         $string = str_replace(
             array_keys(self::$replacePrepare),

@@ -2,8 +2,6 @@
 
 namespace Elegance\Trait;
 
-use Elegance\File;
-
 trait ViewCurrent
 {
     protected static array $current = [];
@@ -99,12 +97,12 @@ trait ViewCurrent
     }
 
     /** Retorna o prepare para ser utilizado na view atual */
-    static function currentGet_data(): ?array
+    static function currentGet_data(): array
     {
         if (count(self::$current))
             return end(self::$current)['data'];
 
-        return null;
+        return [];
     }
 
     /** Adiciona uma view de encapsulamento para view atual */
