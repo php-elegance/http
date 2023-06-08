@@ -6,6 +6,8 @@ chdir(__DIR__);
 
 require './vendor/autoload.php';
 
+Router::middleware(['response.api','response.front']);
+
 Router::add('',fn()=>'Elegance');
 
 Router::solve();
