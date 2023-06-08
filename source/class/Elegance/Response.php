@@ -94,10 +94,13 @@ abstract class Response
         return self::$content;
     }
 
-    /** Retorna o tipo atual da resposta */
-    static function getType(): ?string
+    /** Verifica se o tipo da resposta é um dos tipos informados */
+    static function checkType(): bool
     {
-        return self::$type;
+        foreach (func_get_args() as $type)
+            if (EX_MIMETYPE[strtolower($type)] == self::$type)
+                return true;
+        return false;
     }
 
     #==| Mount |==#

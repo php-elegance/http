@@ -64,7 +64,7 @@ abstract class Front
         if (!is_stringable($content))
             return $content;
 
-        if (!is_null(Response::getType()) && Response::getType() != 'html') {
+        if (Response::checkType('css', 'js')) {
             Response::content($content);
             Response::send();
         }

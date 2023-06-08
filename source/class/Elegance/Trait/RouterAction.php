@@ -64,6 +64,10 @@ trait RouterAction
                 Response::type('html', false);
                 $content = Import::content($file);
                 $response = Vue::renderString($content, Request::route());
+            } else if ($fileEx == 'js' || $fileEx == 'css') {
+                Response::type($fileEx);
+                $content = Import::content($file);
+                $response = View::renderString($content,  Request::route(), $fileEx);
             } else if (View::checkSuportedType($fileEx)) {
                 Response::type(View::getSuportedType($fileEx), false);
                 $content = Import::content($file);
