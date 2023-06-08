@@ -3,13 +3,11 @@
 namespace Elegance;
 
 use Elegance\ViewRender\ViewRenderHtml;
-use Error;
 use Exception;
 
 abstract class Front
 {
     protected static array $head = [];
-    protected static array $error = [];
 
     protected static ?string $layoutView = null;
     protected static bool $layoutStatic = true;
@@ -43,16 +41,6 @@ abstract class Front
     static function head($name, $value)
     {
         self::$head[$name] = $value;
-    }
-
-    /** Define uma rota para redirecionamento em caso de erro */
-    static function error(int|string $status, ?string $route = null)
-    {
-        if (is_string($status)) {
-            $route = $status;
-            $status = 0;
-        }
-        self::$error[$status] = $route;
     }
 
     /** Resolve um conteúdo encapsulando em uma resposta front */
