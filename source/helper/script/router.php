@@ -33,7 +33,7 @@ Router::add('front.js', function () {
 });
 
 Router::add('vue.js', function () {
-    $file = dirname(__DIR__, 3) . 'library/assets/vue.js';
+    $file = dirname(__DIR__, 3) . '/library/assets/vue.js';
 
     Assets::load($file);
 
