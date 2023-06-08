@@ -64,6 +64,11 @@ abstract class Front
         if (!is_stringable($content))
             return $content;
 
+        if (!is_null(Response::getType()) && Response::getType() != 'html') {
+            Response::content($content);
+            Response::send();
+        }
+
         if (Request::header('Front-Request')) {
             Response::type('json');
             Response::status(STS_OK);

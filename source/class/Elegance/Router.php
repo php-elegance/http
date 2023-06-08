@@ -45,8 +45,15 @@ abstract class Router
         $files = Dir::seek_for_file($path, true);
 
         foreach ($files as $file) {
-            $ex = File::getEx($file);
-            $route = substr($file, 0, num_negative(strlen(".$ex")));
+            if (str_starts_with(File::getOnly($file), '=')) {
+                $onlyPath = Dir::getOnly($file);
+                $onlyFile = substr(File::getOnly($file), 1);
+                $route = "$onlyPath/$onlyFile";
+            } else {
+                $ex = File::getEx($file);
+                $route = substr($file, 0, num_negative(strlen(".$ex")));
+            }
+
             $route = "$inRoute/$route";
             $response = "::" . path($path, $file);
 
