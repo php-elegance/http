@@ -94,6 +94,12 @@ abstract class Response
         return self::$content;
     }
 
+    /** Retorna o tipo atual da resposta */
+    static function getType(): ?string
+    {
+        return self::$type;
+    }
+
     #==| Mount |==#
 
     /** Retorna conteúdo da resposta */
