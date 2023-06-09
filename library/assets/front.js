@@ -174,18 +174,20 @@ front.core.register("form[front]", (el) => {
             new FormData(el)
         );
 
-        let action = el.getAttribute(resp.error ? "onerror" : "onsuccess");
+        let action = el.getAttribute(resp.info.error ? "onerror" : "onsuccess");
 
         if (action) action = eval(action);
 
         if (action instanceof Function) return action(resp);
 
         if (showmessage) {
-            let spanClass = `sts_` + (resp.error ? "erro" : "success");
-            let message = resp.info.message ?? (resp.error ? "erro" : "ok");
+
+            let spanClass = `sts_` + (resp.info.error ? "erro" : "success");
+            let message = resp.info.message ?? (resp.info.error ? "erro" : "ok");
             let description = resp.info.description ?? "";
+
             showmessage.innerHTML =
-                `<span class='sts_${resp.status} ${spanClass}'>` +
+                `<span class='sts_${resp.info.status} ${spanClass}'>` +
                 `<span>${message}</span>` +
                 `<span>${description}</span>` +
                 `</span>`;

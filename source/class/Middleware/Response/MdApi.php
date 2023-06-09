@@ -60,7 +60,10 @@ class MdApi
                 if ($status >= 500 && !env('DEV'))
                     $info = [];
 
-                $response['info'] = !empty($info) ? $info : [];
+                $response['info'] = [
+                    ...$response['info'],
+                    ...$info,
+                ];
         }
 
         if (env('DEV')) {
