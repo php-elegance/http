@@ -95,15 +95,16 @@ abstract class View
         if (!self::checkSuportedType($type))
             return false;
 
+        $viewRef = str_starts_with($viewRef, '@') ? path(self::currentGet_path(), substr($viewRef, 1)) : $viewRef;
+
         if (str_starts_with($viewRef, '='))
             return [
                 md5($viewRef), //KEY
-                null, //PATH
+                Dir::getOnly($viewRef), //PATH
                 substr($viewRef, 1), //FILE
                 self::getSuportedType($type), //TYPE
             ];
 
-        $viewRef = str_starts_with($viewRef, '@') ? substr($viewRef, 1) : path(self::currentGet_path(), $viewRef);
         $file = path('view', $viewRef);
 
         if (!File::check($file)) {
