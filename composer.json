@@ -22,7 +22,6 @@
             "source/helper/function/view.php",
             "source/helper/function/vue.php",
             "source/helper/script/env.php",
-            "source/helper/script/front.php",
             "source/helper/script/router.php",
             "source/helper/script/start.php",
             "source/helper/script/view.php"

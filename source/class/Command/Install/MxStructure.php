@@ -24,12 +24,9 @@ abstract class MxStructure
 
         MxCmd::echo('Estrutura criada');
 
-        File::copy("$basePath/library/assets/front.js", 'library/assets/front.js');
-        File::copy("$basePath/library/base.html", 'library/base.html');
         File::copy("$basePath/source/class/Middleware/Response/MdApi.php", 'source/class/Middleware/Response/MdApi.php');
-        File::copy("$basePath/source/class/Middleware/Response/MdFront.php", 'source/class/Middleware/Response/MdFront.php');
 
-        MxCmd::echo('Arquivos principais instalados');
+        MxCmd::echo('Middleware API Instalada');
 
         MxCmd::run('install.index');
     }
