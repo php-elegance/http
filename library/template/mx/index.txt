@@ -8,6 +8,6 @@ require './vendor/autoload.php';
 
 Router::middleware('response.api');
 
-Router::add('',fn()=>['Elegance']);
+Router::add('', fn () => 'Elegance');
 
 Router::solve();
