@@ -8,7 +8,6 @@ use Elegance\Import;
 use Elegance\Request;
 use Elegance\Response;
 use Elegance\View;
-use Elegance\Vue;
 use Exception;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
@@ -60,10 +59,6 @@ trait RouterAction
                     Response::type(View::getSuportedType($__TYPE), false);
                     return View::renderString($__OUTPUT__, $__DATA, $__TYPE);
                 })($file, Request::route());
-            } elseif ($fileEx == 'vue') {
-                Response::type('html', false);
-                $content = Import::content($file);
-                $response = Vue::renderString($content, Request::route());
             } else if ($fileEx == 'js' || $fileEx == 'css') {
                 Response::type($fileEx);
                 $content = Import::content($file);

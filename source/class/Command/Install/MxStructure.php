@@ -10,7 +10,6 @@ abstract class MxStructure
 {
     static function __default()
     {
-        $basePath = dirname(__DIR__, 4);
 
         Dir::create('library');
         Dir::create('library/assets');
@@ -20,7 +19,8 @@ abstract class MxStructure
         Dir::create('source/helper/function');
         Dir::create('source/helper/script');
         Dir::create('view');
-        Dir::create('vue');
+
+        $basePath = dirname(__DIR__, 4);
 
         MxCmd::echo('Estrutura criada');
 
