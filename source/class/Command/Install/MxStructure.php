@@ -11,23 +11,23 @@ abstract class MxStructure
     static function __default()
     {
 
-        Dir::create('library');
-        Dir::create('library/assets');
-        Dir::create('source/class');
-        Dir::create('source/helper');
-        Dir::create('source/helper/constant');
-        Dir::create('source/helper/function');
-        Dir::create('source/helper/script');
-        Dir::create('view');
+        $basePath = dirname(__DIR__, 4) . '/teste';
 
-        $basePath = dirname(__DIR__, 4);
+        Dir::create("$basePath/library");
+        Dir::create("$basePath/library/assets");
+        Dir::create("$basePath/source/class");
+        Dir::create("$basePath/source/helper");
+        Dir::create("$basePath/source/helper/constant");
+        Dir::create("$basePath/source/helper/function");
+        Dir::create("$basePath/source/helper/script");
+        Dir::create("$basePath/view");
 
-        MxCmd::echo('Estrutura criada');
+        MxCmd::echo("Estrutura criada");
 
-        File::copy("$basePath/source/class/Middleware/Response/MdApi.php", 'source/class/Middleware/Response/MdApi.php');
+        File::copy("source/class/Middleware/Response/MdApi.php", "$basePath/source/class/Middleware/Response/MdApi.php");
 
-        MxCmd::echo('Middleware API Instalada');
+        MxCmd::echo("Middleware API Instalada");
 
-        MxCmd::run('install.index');
+        MxCmd::run("install.index");
     }
 }
