@@ -7,8 +7,14 @@ use Elegance\Request;
 trait RouterUtil
 {
 
-    protected static function cls_route(string $route): string
+    protected static function cls_route(string|array $route): string
     {
+        if (is_array($route)) {
+            foreach ($route as &$r)
+                $r = self::cls_route($r);
+            return implode('::', $route);
+        }
+
         $route = str_replace(['[...]', '+', '['], ['...', '/', '[#'], $route);
         $route = str_replace(['[##', '[#@', '[#='], ['[#', '[@', '[='], $route);
 
@@ -108,7 +114,24 @@ trait RouterUtil
         $queue = [];
 
         foreach ($templates as $template) {
-            if (str_starts_with($template, '!')) {
+            if (substr_count($template, '::')) {
+                $ck = true;
+                $itens = explode('::', $template);
+
+                foreach ($itens as $item) {
+                    if ($ck) {
+                        if (str_starts_with($item, '!')) {
+                            $ck = $ck && !self::match(substr($item, 1));
+                        } else {
+                            $ck = $ck && self::match($item);
+                        }
+                    }
+                }
+
+                if ($ck) {
+                    $queue[] = $middlewares[$template];
+                }
+            } else if (str_starts_with($template, '!')) {
                 if (!self::match(substr($template, 1)))
                     $queue[] = $middlewares[$template];
             } else {
