@@ -160,7 +160,7 @@ abstract class Response
         if (is_array(self::$content) || is_json(self::$content))
             self::type('json');
 
-        $type = self::$type ?? EX_MIMETYPE['html'];
+        $type = self::$type ?? EX_MIMETYPE['json'];
 
         return ['Content-Type' => "$type; charset=utf-8"];
     }
