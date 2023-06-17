@@ -29,6 +29,9 @@ trait RouterAction
         if (is_closure($response))
             return fn () => self::action_closure($response);
 
+        if (is_object($response))
+            return fn () => self::action_object($response);
+
         return fn () => throw new Exception('Invalid response route', STS_INTERNAL_SERVER_ERROR);
     }
 
@@ -90,6 +93,22 @@ trait RouterAction
             $params = self::getUseParams(new ReflectionMethod($function, '__invoke'));
         }
         return $function(...$params);
+    }
+
+    protected static function action_object(Object $object)
+    {
+        $paramsMethod = [];
+
+        $method = strtolower(Request::type());
+
+        if (!method_exists($object, $method)) {
+            $errCode = STS_METHOD_NOT_ALLOWED;
+            throw new Exception("Method [$method] not allowed", $errCode);
+        }
+
+        $paramsMethod = self::getUseParams(new ReflectionMethod($object, $method));
+
+        return $object->{$method}(...$paramsMethod);
     }
 
     /** Retorna os parametros que devem ser usados em um metodo refletido */
