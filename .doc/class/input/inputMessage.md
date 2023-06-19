@@ -17,7 +17,7 @@ Para retornar uma menssagem de erro, utilize o metodo **get**
     inputMessage::get($type);
 
 **Padrão**
-A classe conta com 13 menssagens padrão que são usadas nos erros do [InputField](https://github.com/php-elegance/front/tree/main/.doc/class/input/inputField.md). Sinta-se livre para altera-las.
+A classe conta com 13 menssagens padrão que são usadas nos erros do [InputField](https://github.com/php-elegance/http/tree/main/.doc/class/input/inputField.md). Sinta-se livre para altera-las.
 
 **FILTER_VALIDATE_IP**
 O campo [#name] precisa ser um endereço IP
