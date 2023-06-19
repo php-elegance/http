@@ -51,13 +51,13 @@ abstract class Response
     }
 
     /** Define se o arquivo deve ser armazenado em cache */
-    static function cache(null|bool|int $time)
+    static function cache(null|bool|int $time): void
     {
         self::$cache = $time;
     }
 
     /** Define se o navegador deve fazer download da resposta */
-    static function download(null|bool|string $download)
+    static function download(null|bool|string $download): void
     {
         if (is_string($download)) {
             self::$downloadName = $download;
@@ -67,7 +67,7 @@ abstract class Response
     }
 
     /** Envia a resposta ao navegador do cliente */
-    static function send()
+    static function send(): never
     {
         $content = self::getMontedContent();
         $headers = self::getMontedHeders();

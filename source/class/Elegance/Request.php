@@ -15,7 +15,7 @@ abstract class Request
     protected static ?array $file = null;
 
     /** Retorna/Compara o tipo da requisição atual (GET, POST, PUT, DELETE, OPTIONS,) */
-    static function type(): string
+    static function type(): string|bool
     {
         self::$type = self::$type ?? self::current_type();
 
