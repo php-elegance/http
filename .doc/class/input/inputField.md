@@ -90,9 +90,9 @@ Pode-se adicionar regras personalizadas de sanitaze
 
     $field->get();
 
-**error**: Lança uma **Exception** em nome do campo
+**send**: Lança uma **Exception** em nome do campo
 
-    $field->error($message,...$description);
+    $field->send($message,...$description);
 
 **recived**: Verifica se o campo foi recebido
 
