@@ -86,7 +86,7 @@ Pode-se definir multiplas condições de rota para uma mesma middleware
 
     Router::middleware(['blog','!blog/all'],'middleware');
 
-**veja**: [middleware](https://github.com/guaxinimdmx/elegance/tree/main/.doc/class/middleware.md)
+**veja**: [middleware](https://github.com/php-elegance/front/tree/main/.doc/class/middleware.md)
 
 > Uma rota personalizada para favicon.ico já é implementada. Isso evita um bug em navegadores que chamam este arquivo de forma automática. A rota pode ser subistituída a qualquer momento.
 
@@ -233,4 +233,4 @@ Os arquivos podem ser do tipo PHP, HTML, CSS, SCSS e JS. A classe tentará respe
  - **css, scss**: CSS
  - **js** => js
 
-Arquivos de rota que não retornarem nada, ou retornar uma string, serão tratados como uma [view](https://github.com/guaxinimdmx/elegance/tree/main/.doc/class/view.md).
+Arquivos de rota que não retornarem nada, ou retornar uma string, serão tratados como uma [view](https://github.com/php-elegance/front/tree/main/.doc/class/view.md).

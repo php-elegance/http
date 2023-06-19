@@ -15,7 +15,7 @@ Para adicionar campos utilize o metodo **feild**
 - O paraemtro $name é o nome do campo
 - O parametro $alias é o nome que deve ser usado em mensagens de erro
 
-> Este metod retorna uma instancia [InputField](https://github.com/guaxinimdmx/elegance/tree/main/.doc/resource/input/inputField.md)
+> Este metod retorna uma instancia [InputField](https://github.com/php-elegance/front/tree/main/.doc/class/input/inputField.md)
 
 **Utilização**
 

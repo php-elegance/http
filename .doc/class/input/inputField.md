@@ -6,7 +6,7 @@ Controla um campo especifico de input
 
     $field = new InputField(array|string $name, mixed $value, ?bool $recived = null);
 
-> E extremamente aconselhavel inicializar um InputFile usando o metodo **field** de um objeto [input](https://github.com/guaxinimdmx/elegance/tree/main/.doc/resource/input/input.md)
+> E extremamente aconselhavel inicializar um InputFile usando o metodo **field** de um objeto [input](https://github.com/php-elegance/front/tree/main/.doc/class/input/input.md)
 
 **Validação**
 
