@@ -14,7 +14,7 @@ trait RouterAction
 {
     protected static array $prefix = [];
 
-    protected static function setPrefixAction(string $prefix, Closure $action, $reaction = false): void
+    static function setPrefixAction(string $prefix, Closure $action, $reaction = false): void
     {
         self::$prefix[$prefix] = [$action, $reaction];
     }
@@ -37,18 +37,13 @@ trait RouterAction
                         list($action, $reaction) = self::$prefix[$prefix];
                         $response = substr($response, strlen($prefix));
                         if ($reaction)
-                            return fn () => self::getAction($action($response), true);
+                            return fn () => self::getAction($action($response), true)();
                         return fn () => $action($response);
                     }
 
             if (str_starts_with($response, '::'))
                 return fn () => self::action_import(substr($response, 2));
-            return fn () => $response;
-        }
 
-        if (is_string($response)) {
-            if (str_starts_with($response, '::'))
-                return fn () => self::action_import(substr($response, 2));
             return fn () => $response;
         }
 
