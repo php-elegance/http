@@ -98,7 +98,7 @@ abstract class Response
     static function checkType(): bool
     {
         foreach (func_get_args() as $type)
-            if (EX_MIMETYPE[strtolower($type)] == self::$type)
+            if (isset(EX_MIMETYPE[strtolower($type)]) && EX_MIMETYPE[strtolower($type)] == self::$type)
                 return true;
         return false;
     }
