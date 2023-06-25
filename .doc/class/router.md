@@ -225,12 +225,3 @@ Um exemplo de um arquivo de middleware **\_.php**
                 return $next();
             }
         ];
-
-### Tipos de arquivo de rota
-Os arquivos podem ser do tipo PHP, HTML, CSS, SCSS e JS. A classe tentará respeitar o tipo de resposta de cada aquivo
-
- - **php, hml**: resposta html
- - **css, scss**: CSS
- - **js** => js
-
-Arquivos de rota que não retornarem nada, ou retornar uma string, serão tratados como uma [view](https://github.com/php-elegance/http/tree/main/.doc/class/view.md).

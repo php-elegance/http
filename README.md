@@ -17,7 +17,6 @@ Ferramentas para criação de soluções HTTP com PHP Elegance
 - [request](https://github.com/php-elegance/http/tree/main/.doc/class/request.md)
 - [response](https://github.com/php-elegance/http/tree/main/.doc/class/response.md)
 - [router](https://github.com/php-elegance/http/tree/main/.doc/class/router.md)
-- [view](https://github.com/php-elegance/http/tree/main/.doc/class/view.md)
 
 **Helpers**
 

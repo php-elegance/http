@@ -19,15 +19,12 @@
             "source/helper/function/is_httpStatus.php",
             "source/helper/function/redirect.php",
             "source/helper/function/url.php",
-            "source/helper/function/view.php",
             "source/helper/script/env.php",
             "source/helper/script/router.php",
-            "source/helper/script/start.php",
-            "source/helper/script/view.php"
+            "source/helper/script/start.php"
         ]
     },
     "require": {
-        "elegance/core": "^1.0",
-        "scssphp/scssphp": "^1.11"
+        "elegance/core": "^1.0"
     }
 }
