@@ -101,10 +101,15 @@ abstract class Request
     {
         self::$file = self::$file ?? self::current_file();
 
-        if (func_num_args())
-            return self::$file[func_get_arg(0)] ?? [];
+        $return = self::$file;
 
-        return self::$file;
+        if (func_num_args())
+            $return = $return[func_get_arg(0)] ?? [];
+
+        if (func_num_args() > 1)
+            $return = $return[func_get_arg(1)] ?? [];
+
+        return $return;
     }
 
     #==| SET |==#
